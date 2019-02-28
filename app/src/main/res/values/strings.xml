@@ -1,0 +1,84 @@
+<resources>
+    <string name="app_name">Roomie</string>
+
+    <!-- Roomie API -->
+    <string name="roomie_api_server_prod" translatable="false">https://prod-roomie-web.herokuapp.com/api/</string>
+    <string name="roomie_api_server_staging" translatable="false">https://staging-roomie-web.herokuapp.com/api/</string>
+    <string name="roomie_api_server_dev" translatable="false">https://dev-roomie-web.herokuapp.com/api/</string>
+    <string name="roomie_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
+
+    <!-- Facebook login -->
+    <string name="fb_login_protocol_scheme" translatable="false">fb235433017402895</string>
+    <string name="facebook_app_id" translatable="false">235433017402895</string>
+
+    <!-- Google login -->
+    <string name="default_web_client_id" translatable="false">64621209556-l09m88enb8afsn04sbeb111shpoq1etf.apps.googleusercontent.com</string>
+
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email completions."</string>
+    <string name="action_login_with_facebook">Facebook</string>
+    <string name="action_login_with_google">Google</string>
+    <string name="action_login_with_facebook_long">Sign in with Facebook</string>
+    <string name="action_login_with_google_long">Sign in with Google</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+    <string name="loginErrorMsg">Login error</string>
+    <string name="recoverErrorMsg">Error recovering password</string>
+    <string name="registerErrorMsg">Sign up error</string>
+    <string name="title_activity_register">Register</string>
+    <string name="action_sign_up">Don\'t have an account?</string>
+    <string name="action_sign_up_short">Sign up</string>
+    <string name="error_password_not_match">Repeat password not match</string>
+    <string name="prompt_name">Name</string>
+    <string name="prompt_description">Description (Optional)</string>
+    <string name="prompt_number">Number (Optional)</string>
+    <string name="action_save">Save</string>
+    <string name="save_error">Save error</string>
+    <string name="delete_error">Delete error</string>
+    <string name="error_mandatory_field">Mandatory field</string>
+    <string name="account">Account</string>
+    <string name="logout">Logout</string>
+    <string name="error_getting_items">Error getting items</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="cancel">Cancel</string>
+    <string name="sure_to_delete">Are you sure to delete?</string>
+    <string name="dependency_load_error">Error getting resources</string>
+    <string name="title_activity_account">Account</string>
+    <string name="action_change">Change</string>
+    <string name="change_password">Change password</string>
+    <string name="promt_last_name">Last name</string>
+    <string name="promt_first_name">First name</string>
+    <string name="error_invalid_first_name">Invalid first name</string>
+    <string name="error_invalid_last_name">Invalid last name</string>
+    <string name="save_success">Save success</string>
+    <string name="my_account">My account</string>
+    <string name="unknown_error">Unknown Error</string>
+    <string name="error_existing_email">This account is already registered</string>
+    <string name="activate_account_first">Confirm your email first</string>
+    <string name="action_recover">Recover</string>
+    <string name="title_activity_recover_password">Recover password</string>
+    <string name="recover_password">Forgot your password?</string>
+    <string name="recover_password_success">We have sent you an email with password recovery instructions</string>
+    <string name="ok">OK</string>
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_notifications">Notifications</string>
+    <string name="bottom_nav_account">Account</string>
+    <string name="bottom_nav_menu">Menu</string>
+    <string name="login_or">Or</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

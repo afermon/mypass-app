@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#FB6340</color>
+    <color name="colorPrimaryDark">#C84F33</color>
+    <color name="colorAccent">#ADB5BD</color>
+
+    <color name="blue">#5e72e4</color>
+    <color name="indigo">#5603ad</color>
+    <color name="purple">#8965e0</color>
+    <color name="pink">#f3a4b5</color>
+    <color name="red">#f5365c</color>
+    <color name="orange">#fb6340</color>
+    <color name="orange_trans">#4Efb6340</color>
+    <color name="yellow">#ffd600</color>
+    <color name="green">#2dce89</color>
+    <color name="teal">#11cdef</color>
+    <color name="cyan">#2bffc6</color>
+    <color name="default_color">#172b4d</color>
+    <color name="primary">#fb6340</color>
+    <color name="secondary">#f4f5f7</color>
+    <color name="success">#2dce89</color>
+    <color name="info">#11cdef</color>
+    <color name="warning">#fb6340</color>
+    <color name="danger">#f5365c</color>
+    <color name="light">#ADB5BD</color>
+    <color name="dark">#212529</color>
+    <color name="darker">#151719</color>
+
+    <color name="facebook">#3b5999</color>
+    <color name="twitter">#1da1f2</color>
+    <color name="google_plus">#DD4B39</color>
+</resources>
