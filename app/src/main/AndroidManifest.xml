@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cosmicode.roomie">
+    package="com.cosmicode.mypass">
 
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".RoomieApplication"
+        android:name="com.cosmicode.mypass.MyPassApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -37,11 +37,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".AccountActivity"></activity>
-        <activity android:name=".RecoverPasswordActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".SplashActivity">
+        <activity android:name="com.cosmicode.mypass.AccountActivity"></activity>
+        <activity android:name="com.cosmicode.mypass.RecoverPasswordActivity" />
+        <activity android:name="com.cosmicode.mypass.RegisterActivity" />
+        <activity android:name="com.cosmicode.mypass.LoginActivity"/>
+        <activity android:name="com.cosmicode.mypass.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -49,7 +49,7 @@
         </activity>
 
 
-        <activity android:name=".MainActivity" />
+        <activity android:name="com.cosmicode.mypass.MainActivity" />
     </application>
 
 </manifest>
