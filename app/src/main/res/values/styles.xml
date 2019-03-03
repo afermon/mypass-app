@@ -6,15 +6,15 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:textViewStyle">@style/RoomieTextViewStyle</item>
-        <item name="android:buttonStyle">@style/RoomieButtonStyle</item>
+        <item name="android:textViewStyle">@style/MyPassTextViewStyle</item>
+        <item name="android:buttonStyle">@style/MyPassButtonStyle</item>
     </style>
 
-    <style name="RoomieTextViewStyle" parent="android:Widget.TextView">
+    <style name="MyPassTextViewStyle" parent="android:Widget.TextView">
         <item name="android:fontFamily">sans-serif-light</item>
     </style>
 
-    <style name="RoomieButtonStyle" parent="android:Widget.Material.Button">
+    <style name="MyPassButtonStyle" parent="android:Widget.Material.Button">
         <item name="android:fontFamily">sans-serif-light</item>
         <item name="android:backgroundTint">@color/secondary</item>
     </style>

@@ -19,5 +19,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/roomie_logo_full_white" />
+        app:srcCompat="@mipmap/mypass_logo_full_white" />
 </android.support.constraint.ConstraintLayout>

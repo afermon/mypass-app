@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Roomie</string>
+    <string name="app_name">MyPass</string>
 
-    <!-- Roomie API -->
-    <string name="roomie_api_server_prod" translatable="false">https://prod-roomie-web.herokuapp.com/api/</string>
-    <string name="roomie_api_server_staging" translatable="false">https://staging-roomie-web.herokuapp.com/api/</string>
-    <string name="roomie_api_server_dev" translatable="false">https://dev-roomie-web.herokuapp.com/api/</string>
-    <string name="roomie_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
+    <!-- MyPass API -->
+    <string name="mypass_api_server_prod" translatable="false">https://prod-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_staging" translatable="false">https://staging-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_dev" translatable="false">https://dev-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
 
     <!-- Facebook login -->
     <string name="fb_login_protocol_scheme" translatable="false">fb235433017402895</string>

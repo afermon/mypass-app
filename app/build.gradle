@@ -11,7 +11,7 @@ android {
     }
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.cosmicode.roomie"
+        applicationId "com.cosmicode.mypass"
         minSdkVersion 24
         targetSdkVersion 28
         versionCode 1
