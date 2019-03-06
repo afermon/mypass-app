@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.R;
+import com.cosmicode.mypass.domain.MyPassUser;
 
 
 /**
@@ -73,6 +75,7 @@ public class MainOptionsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        ((BaseActivity)getActivity()).getJhiUsers().getLogedUser(user -> updateUserInfo(user));
         Button logout_button = getView().findViewById(R.id.logout_button);
         logout_button.setOnClickListener(v -> {
             if (mListener != null) {
@@ -98,6 +101,14 @@ public class MainOptionsFragment extends Fragment {
         mListener = null;
     }
 
+    public void updateUserInfo(MyPassUser mypassUser) {
+        TextView nameTextView = getView().findViewById(R.id.profile_name);
+        TextView emailTextView = getView().findViewById(R.id.profile_email);
+        nameTextView.setText(mypassUser.getFullName());
+        emailTextView.setText(mypassUser.getEmail());
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -111,6 +122,5 @@ public class MainOptionsFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         void performLogout();
 
-        BaseActivity getBaseActivity();
     }
 }

@@ -1,14 +1,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/navigation_view_home"
-        android:title="@string/bottom_nav_home"
-        android:icon="@drawable/ic_action_home"
-        />
-    <item
-        android:id="@+id/navigation_view_account"
-        android:title="@string/bottom_nav_account"
-        android:icon="@drawable/ic_action_user"
-        />
+        android:icon="@drawable/ic_action_lock"
+        android:title="@string/bottom_nav_home" />
     <item
         android:id="@+id/navigation_view_notifications"
         android:title="@string/bottom_nav_notifications"

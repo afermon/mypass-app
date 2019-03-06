@@ -18,7 +18,7 @@ public class ApiServiceGenerator {
 
 
     private static String getServerURL() {
-        return BuildConfig.DEBUG ? ROOMIE_API_DEV : ROOMIE_API_PROD;
+        return BuildConfig.DEBUG ? ROOMIE_API_LOCAL : ROOMIE_API_PROD;
     }
 
     private static Gson gson = new GsonBuilder()
