@@ -8,28 +8,33 @@ public class Notification {
     @SerializedName("id")
     @Expose
     private Long id;
-
     @SerializedName("title")
     @Expose
     private String title;
-
-    @SerializedName("body")
+    @SerializedName("content")
     @Expose
-    private String body;
-
-
-    @SerializedName("entityId")
+    private String content;
+    @SerializedName("created")
     @Expose
-    private Long entityId;
+    private String created;
+    @SerializedName("read")
+    @Expose
+    private Boolean read;
+    @SerializedName("userId")
+    @Expose
+    private Long userId;
+    @SerializedName("userLogin")
+    @Expose
+    private String userLogin;
 
-    public Notification() {
-    }
-
-    public Notification(Long id, String title, String body, Long entityId) {
+    public Notification(Long id, String title, String content, String created, Boolean read, Long userId, String userLogin) {
         this.id = id;
         this.title = title;
-        this.body = body;
-        this.entityId = entityId;
+        this.content = content;
+        this.created = created;
+        this.read = read;
+        this.userId = userId;
+        this.userLogin = userLogin;
     }
 
     public Long getId() {
@@ -48,22 +53,56 @@ public class Notification {
         this.title = title;
     }
 
-    public String getBody() {
-        return body;
+    public String getContent() {
+        return content;
     }
 
-    public void setBody(String body) {
-        this.body = body;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public Long getEntityId() {
-        return entityId;
+    public String getCreated() {
+        return created;
     }
 
-    public void setEntityId(Long entityId) {
-        this.entityId = entityId;
+    public void setCreated(String created) {
+        this.created = created;
     }
 
+    public Boolean getRead() {
+        return read;
+    }
 
+    public void setRead(Boolean read) {
+        this.read = read;
+    }
 
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getUserLogin() {
+        return userLogin;
+    }
+
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    @Override
+    public String toString() {
+        return "Notification{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content='" + content + '\'' +
+                ", created='" + created + '\'' +
+                ", read=" + read +
+                ", userId=" + userId +
+                ", userLogin='" + userLogin + '\'' +
+                '}';
+    }
 }

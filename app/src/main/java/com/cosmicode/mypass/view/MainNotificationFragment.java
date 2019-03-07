@@ -3,20 +3,14 @@ package com.cosmicode.mypass.view;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.R;
-import com.cosmicode.mypass.domain.MyPassUser;
-import com.cosmicode.mypass.view.dummy.DummyContent;
-import com.cosmicode.mypass.view.dummy.DummyContent.DummyItem;
-
+import com.cosmicode.mypass.domain.Notification;
+import com.cosmicode.mypass.service.NotificationService;
 import java.util.List;
 
 /**
@@ -25,14 +19,14 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class MainNotificationFragment extends Fragment {
+public class MainNotificationFragment extends Fragment implements NotificationService.NotificationServiceListener {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
-
+    private NotificationService notificationService;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -53,7 +47,7 @@ public class MainNotificationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        notificationService = new NotificationService(getContext(), this);
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -64,17 +58,6 @@ public class MainNotificationFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_notification, container, false);
 
-        // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
-            recyclerView.setAdapter(new MyNotificationRecyclerViewAdapter(DummyContent.ITEMS, mListener));
-        }
         return view;
     }
 
@@ -92,7 +75,7 @@ public class MainNotificationFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-
+        notificationService.getUserNotifications();
     }
 
     @Override
@@ -101,6 +84,21 @@ public class MainNotificationFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void OnGetNotificationsSuccess(List<Notification> notifications) {
+        View view = getView();
+        if (view instanceof RecyclerView) {
+            Context context = view.getContext();
+            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView.setLayoutManager(new LinearLayoutManager(context));
+            recyclerView.setAdapter(new MyNotificationRecyclerViewAdapter(notifications, mListener));
+        }
+    }
+
+    @Override
+    public void OnGetNotificationsError(String error) {
+
+    }
 
 
     /**
@@ -114,7 +112,6 @@ public class MainNotificationFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyItem item);
+        void onListFragmentInteraction(Notification item);
     }
 }
