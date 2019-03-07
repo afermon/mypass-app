@@ -8,10 +8,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.MenuItem;
 
+import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.view.MainHomeFragment;
 import com.cosmicode.mypass.view.MainNotificationFragment;
 import com.cosmicode.mypass.view.MainOptionsFragment;
-import com.cosmicode.mypass.view.dummy.DummyContent;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-
+    public void onListFragmentInteraction(Notification item) {
+        //TODO: Remove
     }
 }

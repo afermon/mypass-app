@@ -7,22 +7,22 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cosmicode.mypass.R;
+import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.view.MainNotificationFragment.OnListFragmentInteractionListener;
-import com.cosmicode.mypass.view.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Notification} and makes a call to the
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyNotificationRecyclerViewAdapter extends RecyclerView.Adapter<MyNotificationRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Notification> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyNotificationRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyNotificationRecyclerViewAdapter(List<Notification> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -37,8 +37,9 @@ public class MyNotificationRecyclerViewAdapter extends RecyclerView.Adapter<MyNo
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mTitleView.setText(mValues.get(position).getTitle());
+        holder.mContentView.setText(mValues.get(position).getContent());
+        holder.mDateView.setText(mValues.get(position).getCreated());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,7 +51,7 @@ public class MyNotificationRecyclerViewAdapter extends RecyclerView.Adapter<MyNo
                 }
             }
         });
-    }
+}
 
     @Override
     public int getItemCount() {
@@ -59,15 +60,17 @@ public class MyNotificationRecyclerViewAdapter extends RecyclerView.Adapter<MyNo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
+        public final TextView mTitleView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView mDateView;
+        public Notification mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mTitleView = (TextView) view.findViewById(R.id.item_title);
+            mContentView = (TextView) view.findViewById(R.id.item_content);
+            mDateView = (TextView) view.findViewById(R.id.item_date);
         }
 
         @Override
