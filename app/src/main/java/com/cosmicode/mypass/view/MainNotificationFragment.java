@@ -11,6 +11,8 @@ import android.view.ViewGroup;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.service.NotificationService;
+import com.cosmicode.mypass.util.adapters.MyNotificationRecyclerViewAdapter;
+
 import java.util.List;
 
 /**

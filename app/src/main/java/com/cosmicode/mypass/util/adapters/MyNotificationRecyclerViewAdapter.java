@@ -1,4 +1,4 @@
-package com.cosmicode.mypass.view;
+package com.cosmicode.mypass.util.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
