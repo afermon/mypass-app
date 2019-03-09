@@ -37,7 +37,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.cosmicode.mypass.AccountActivity"></activity>
         <activity android:name="com.cosmicode.mypass.RecoverPasswordActivity" />
         <activity android:name="com.cosmicode.mypass.RegisterActivity" />
         <activity android:name="com.cosmicode.mypass.LoginActivity"/>

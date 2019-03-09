@@ -16,7 +16,7 @@ import com.cosmicode.mypass.util.adapters.MyNotificationRecyclerViewAdapter;
 import java.util.List;
 
 /**
- * A fragment representing a list of Items.
+ * A fragment representing a secrets of Items.
  * <p/>
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.

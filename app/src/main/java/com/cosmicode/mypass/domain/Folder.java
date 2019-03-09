@@ -7,12 +7,9 @@ import java.util.List;
 
 public class Folder {
 
-    @SerializedName("created")
-    @Expose
-    private String created;
     @SerializedName("icon")
     @Expose
-    private Long icon;
+    private String icon;
     @SerializedName("id")
     @Expose
     private Integer id;
@@ -31,12 +28,14 @@ public class Folder {
     @SerializedName("ownerLogin")
     @Expose
     private String ownerLogin;
+    @SerializedName("secrets")
+    @Expose
+    private List<Secret> secrets = null;
     @SerializedName("sharedWiths")
     @Expose
     private List<JhiAccount> sharedWiths = null;
 
-    public Folder(String created, Long icon, Integer id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<JhiAccount> sharedWiths) {
-        this.created = created;
+    public Folder(String icon, Integer id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
         this.icon = icon;
         this.id = id;
         this.key = key;
@@ -44,22 +43,15 @@ public class Folder {
         this.name = name;
         this.ownerId = ownerId;
         this.ownerLogin = ownerLogin;
+        this.secrets = secrets;
         this.sharedWiths = sharedWiths;
     }
 
-    public String getCreated() {
-        return created;
-    }
-
-    public void setCreated(String created) {
-        this.created = created;
-    }
-
-    public Long getIcon() {
+    public String getIcon() {
         return icon;
     }
 
-    public void setIcon(Long icon) {
+    public void setIcon(String icon) {
         this.icon = icon;
     }
 
@@ -111,6 +103,14 @@ public class Folder {
         this.ownerLogin = ownerLogin;
     }
 
+    public List<Secret> getSecrets() {
+        return secrets;
+    }
+
+    public void setSecrets(List<Secret> secrets) {
+        this.secrets = secrets;
+    }
+
     public List<JhiAccount> getSharedWiths() {
         return sharedWiths;
     }
@@ -122,15 +122,13 @@ public class Folder {
     @Override
     public String toString() {
         return "Folder{" +
-                "created='" + created + '\'' +
-                ", icon=" + icon +
+                "icon='" + icon + '\'' +
                 ", id=" + id +
                 ", key='" + key + '\'' +
                 ", modified='" + modified + '\'' +
                 ", name='" + name + '\'' +
                 ", ownerId=" + ownerId +
                 ", ownerLogin='" + ownerLogin + '\'' +
-                ", sharedWiths=" + sharedWiths.toString() +
                 '}';
     }
 }
