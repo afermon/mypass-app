@@ -2,16 +2,14 @@ package com.cosmicode.mypass.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Folder;
-import com.cosmicode.mypass.domain.MyPassUser;
 import com.cosmicode.mypass.service.FolderService;
 
 import java.util.List;
