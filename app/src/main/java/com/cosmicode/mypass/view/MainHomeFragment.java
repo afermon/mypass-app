@@ -193,16 +193,23 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             FolderViewHolder headerHolder = (FolderViewHolder) holder;
 
             headerHolder.folderNameTextView.setText(folder.getName());
+
+
+            String count = String.valueOf(folder.getSecrets().size());
+            if (count.equals("0")) count = getString(R.string.none);
+            headerHolder.folderCountTextView.setText("(" + count +")");
         }
     }
 
     private class FolderViewHolder extends RecyclerView.ViewHolder {
 
         private final TextView folderNameTextView;
+        private final TextView folderCountTextView;
 
         FolderViewHolder(View view) {
             super(view);
             folderNameTextView = view.findViewById(R.id.folder_name);
+            folderCountTextView = view.findViewById(R.id.folder_count);
         }
     }
 
