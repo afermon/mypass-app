@@ -26,10 +26,10 @@ public class FolderService {
         this.authToken = ((BaseActivity) this.context).getJhiUsers().getAuthToken();
     }
 
-    public void getUserFolders(){
+    public void getUserFolders(boolean eagerload){
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
-        Call<List<Folder>> call = apiService.getUserFolders();
+        Call<List<Folder>> call = apiService.getUserFolders(eagerload);
 
         call.enqueue(new Callback<List<Folder>>() {
             @Override
