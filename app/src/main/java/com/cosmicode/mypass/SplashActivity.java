@@ -1,7 +1,7 @@
 package com.cosmicode.mypass;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.cosmicode.mypass.service.UserInterface;

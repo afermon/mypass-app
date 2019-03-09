@@ -29,7 +29,7 @@ public class FolderService {
     public void getUserFolders(){
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
-        Call<List<Folder>> call = apiService.getFolders();
+        Call<List<Folder>> call = apiService.getUserFolders();
 
         call.enqueue(new Callback<List<Folder>>() {
             @Override

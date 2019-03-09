@@ -11,8 +11,8 @@ import retrofit2.http.POST;
 
 public interface FolderApiEndpointInterface {
 
-    @GET("folders")
-    Call<List<Folder>> getFolders();
+    @GET("folders/user")
+    Call<List<Folder>> getUserFolders();
 
     @POST("folders")
     Call<Folder> createFolder(@Body Folder folder);

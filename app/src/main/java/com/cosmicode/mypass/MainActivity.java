@@ -3,9 +3,9 @@ package com.cosmicode.mypass;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.MenuItem;
 
 import com.cosmicode.mypass.domain.Notification;
@@ -34,14 +34,14 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
 
         navigationView = findViewById(R.id.navigation_view);
         navigationView.setOnNavigationItemSelectedListener(this);
-        openFragment(MainHomeFragment.newInstance("", ""));
+        openFragment(MainHomeFragment.newInstance());
     }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
             case R.id.navigation_view_home:
-                MainHomeFragment homeFragment = MainHomeFragment.newInstance("", "");
+                MainHomeFragment homeFragment = MainHomeFragment.newInstance();
                 openFragment(homeFragment);
                 return true;
             case R.id.navigation_view_notifications:
@@ -53,7 +53,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
                 openFragment(optionsFragment);
                 return true;
             default:
-                MainHomeFragment defaultFragment = MainHomeFragment.newInstance("", "");
+                MainHomeFragment defaultFragment = MainHomeFragment.newInstance();
                 openFragment(defaultFragment);
                 return super.onOptionsItemSelected(menuItem);
         }

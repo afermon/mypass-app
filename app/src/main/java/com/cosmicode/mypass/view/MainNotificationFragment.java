@@ -2,15 +2,17 @@ package com.cosmicode.mypass.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.service.NotificationService;
+import com.cosmicode.mypass.util.adapters.MyNotificationRecyclerViewAdapter;
+
 import java.util.List;
 
 /**
