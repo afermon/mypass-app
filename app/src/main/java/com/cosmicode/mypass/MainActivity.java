@@ -61,7 +61,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
 
     private void openFragment(Fragment fragment, Boolean toLeft) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(toLeft)
+        if(!toLeft)
             transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right, 0, 0);
         else
             transaction.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, 0, 0);

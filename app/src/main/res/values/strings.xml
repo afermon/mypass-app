@@ -80,6 +80,8 @@
     <string name="login_or">Or</string>
     <string name="none">none</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="copy_password">Copy Password</string>
+    <string name="copy_username">Copy Username</string>
+    <string name="copied_toast">Copied to clipboard</string>
+    <string name="show_password">Show Password</string>
 </resources>

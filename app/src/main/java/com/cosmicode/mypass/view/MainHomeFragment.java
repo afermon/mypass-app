@@ -2,10 +2,17 @@ package com.cosmicode.mypass.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,7 +22,9 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -28,8 +37,11 @@ import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
 import com.cosmicode.mypass.service.FolderService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
+
+import static androidx.core.content.ContextCompat.getSystemService;
 
 public class MainHomeFragment extends Fragment implements FolderService.FolderServiceListener {
 
@@ -188,6 +200,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             return new SecretViewHolder(view);
         }
 
+        @SuppressLint("RestrictedApi")
         @Override
         public void onBindItemViewHolder(RecyclerView.ViewHolder holder, int position) {
             final SecretViewHolder itemHolder = (SecretViewHolder) holder;
@@ -197,11 +210,54 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             itemHolder.secretUsernameTextView.setText(secret.getName());
             itemHolder.secretNameTextView.setText(secret.getUsername());
 
-            itemHolder.rootView.setOnClickListener(v -> Toast.makeText(getContext(),
-                    String.format("Clicked on position #%s of Section %s",
-                            sectionAdapter.getPositionInSection(itemHolder.getAdapterPosition()),
-                            folder),
-                    Toast.LENGTH_SHORT).show());
+            itemHolder.rootView.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                popup.getMenuInflater().inflate(R.menu.secret_options, popup.getMenu());
+                popup.setOnMenuItemClickListener(item -> {
+
+                    Object clipboardService = v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                    final ClipboardManager clipboardManager = (ClipboardManager)clipboardService;
+                    ClipData clipData;
+
+                    switch (item.getItemId()) {
+                        case R.id.copy_username:
+                            clipData = ClipData.newPlainText(getString(R.string.app_name), secret.getUsername());
+                            clipboardManager.setPrimaryClip(clipData);
+                            Snackbar.make(v, R.string.copied_toast, Snackbar.LENGTH_LONG).show();
+                            return true;
+                        case R.id.copy_password:
+                            clipData = ClipData.newPlainText(getString(R.string.app_name), secret.getPassword());
+                            clipboardManager.setPrimaryClip(clipData);
+                            Snackbar.make(v, R.string.copied_toast, Snackbar.LENGTH_LONG).show();
+                            return true;
+                        case R.id.show_password:
+                            Snackbar.make(v, secret.getPassword(), Snackbar.LENGTH_LONG).show();
+                            return true;
+                        case R.id.edit:
+                            Toast.makeText(
+                                    v.getContext(),
+                                    "Not implemented yet",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                        case R.id.delete:
+                            Toast.makeText(
+                                    v.getContext(),
+                                    "Not implemented yet",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                    }
+
+                    return true;
+                });
+
+                MenuPopupHelper menuHelper = new MenuPopupHelper(v.getContext(), (MenuBuilder) popup.getMenu(), v);
+                menuHelper.setForceShowIcon(true);
+                menuHelper.setGravity(Gravity.END);
+                menuHelper.show();
+
+            });
         }
 
         @Override
