@@ -4,6 +4,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +27,7 @@ import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
 import com.cosmicode.mypass.service.FolderService;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     @BindView(R.id.secrets_list) RecyclerView recyclerView;
     @BindView(R.id.progress_bar) ProgressBar progressBar;
+    @BindView(R.id.create_fab) FloatingActionButton createFloatingActionButton;
 
     private FolderService folderService;
 
@@ -60,6 +64,23 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main_home, container, false);
         ButterKnife.bind(this, view);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE)
+                    createFloatingActionButton.show();
+                super.onScrollStateChanged(recyclerView, newState);
+
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0 || dy < 0 && createFloatingActionButton.isShown())
+                    createFloatingActionButton.hide();
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
+
         return view;
     }
 

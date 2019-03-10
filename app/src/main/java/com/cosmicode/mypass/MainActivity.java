@@ -34,7 +34,7 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
 
         navigationView = findViewById(R.id.navigation_view);
         navigationView.setOnNavigationItemSelectedListener(this);
-        openFragment(MainHomeFragment.newInstance());
+        openFragment(MainHomeFragment.newInstance(), true);
     }
 
     @Override
@@ -42,25 +42,29 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         switch (menuItem.getItemId()) {
             case R.id.navigation_view_home:
                 MainHomeFragment homeFragment = MainHomeFragment.newInstance();
-                openFragment(homeFragment);
+                openFragment(homeFragment, false);
                 return true;
             case R.id.navigation_view_notifications:
                 MainNotificationFragment notificationFragment = MainNotificationFragment.newInstance(5);
-                openFragment(notificationFragment);
+                openFragment(notificationFragment, true);
                 return true;
             case R.id.navigation_view_options:
                 MainOptionsFragment optionsFragment = MainOptionsFragment.newInstance("", "");
-                openFragment(optionsFragment);
+                openFragment(optionsFragment, true);
                 return true;
             default:
                 MainHomeFragment defaultFragment = MainHomeFragment.newInstance();
-                openFragment(defaultFragment);
+                openFragment(defaultFragment, true);
                 return super.onOptionsItemSelected(menuItem);
         }
     }
 
-    private void openFragment(Fragment fragment) {
+    private void openFragment(Fragment fragment, Boolean toLeft) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        if(toLeft)
+            transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right, 0, 0);
+        else
+            transaction.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, 0, 0);
         transaction.replace(R.id.main_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
