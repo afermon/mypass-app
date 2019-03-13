@@ -84,4 +84,5 @@
     <string name="copy_username">Copy Username</string>
     <string name="copied_toast">Copied to clipboard</string>
     <string name="show_password">Show Password</string>
+    <string name="share">Share</string>
 </resources>
