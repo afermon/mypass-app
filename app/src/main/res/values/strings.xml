@@ -89,6 +89,5 @@
     <string name="fingerprint_tittle">Fingerprint Authentication</string>
     <string name="fingerprint_instructions">Place your fingertip on the Home button to verify your identity</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="no_data">No resources found, please start creating!</string>
 </resources>

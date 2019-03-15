@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.appcompat.view.menu.MenuPopupHelper;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,6 +54,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @BindView(R.id.secrets_list) RecyclerView recyclerView;
     @BindView(R.id.progress_bar) ProgressBar progressBar;
     @BindView(R.id.create_fab) FloatingActionButton createFloatingActionButton;
+    @BindView(R.id.no_resources) ConstraintLayout noResourcesMessage;
 
     private FolderService folderService;
 
@@ -124,12 +127,18 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     public void OnGetFoldersSuccess(List<Folder> folders) {
         sectionAdapter = new SectionedRecyclerViewAdapter();
 
-        for (Folder folder: folders) {
-            sectionAdapter.addSection(new FolderSection(folder));
-        }
+        if(folders.size() > 0) {
+            noResourcesMessage.setVisibility(View.INVISIBLE);
+            for (Folder folder : folders) {
+                sectionAdapter.addSection(new FolderSection(folder));
+            }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(sectionAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(sectionAdapter);
+
+        } else
+            noResourcesMessage.setVisibility(View.VISIBLE);
+
         showProgress(false);
     }
 
@@ -208,8 +217,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
             Secret secret = this.folder.getSecrets().get(position);
 
-            itemHolder.secretUsernameTextView.setText(secret.getName());
-            itemHolder.secretNameTextView.setText(secret.getUsername());
+            itemHolder.secretNameTextView.setText(secret.getName());
+            itemHolder.secretUsernameTextView.setText(secret.getUsername());
 
             itemHolder.rootView.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
