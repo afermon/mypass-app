@@ -3,10 +3,18 @@ package com.cosmicode.mypass;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+
+import com.cosmicode.mypass.view.MainFingerprintFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import android.view.MenuItem;
+import android.view.View;
 
 import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.view.MainHomeFragment;
@@ -16,10 +24,11 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
-public class MainActivity extends BaseActivity implements BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener, MainNotificationFragment.OnListFragmentInteractionListener {
+public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener, MainNotificationFragment.OnListFragmentInteractionListener {
 
     // Variables
-    private BottomNavigationView navigationView;
+    @BindView(R.id.navigation_view) BottomNavigationView navigationView;
+    @BindView(R.id.navigation_layout) ConstraintLayout navigationLayout;
 
     public static final Intent clearTopIntent(Context from) {
         Intent intent = new Intent(from, MainActivity.class);
@@ -31,10 +40,15 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        navigationView = findViewById(R.id.navigation_view);
+        ButterKnife.bind(this);
         navigationView.setOnNavigationItemSelectedListener(this);
-        openFragment(MainHomeFragment.newInstance(), true);
+        openFragment(MainHomeFragment.newInstance(), "up");
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        challengeUser(true);
     }
 
     @Override
@@ -42,29 +56,30 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         switch (menuItem.getItemId()) {
             case R.id.navigation_view_home:
                 MainHomeFragment homeFragment = MainHomeFragment.newInstance();
-                openFragment(homeFragment, false);
-                return true;
-            case R.id.navigation_view_notifications:
-                MainNotificationFragment notificationFragment = MainNotificationFragment.newInstance(5);
-                openFragment(notificationFragment, true);
+                openFragment(homeFragment, "left");
                 return true;
             case R.id.navigation_view_options:
                 MainOptionsFragment optionsFragment = MainOptionsFragment.newInstance("", "");
-                openFragment(optionsFragment, true);
+                openFragment(optionsFragment, "right");
                 return true;
             default:
                 MainHomeFragment defaultFragment = MainHomeFragment.newInstance();
-                openFragment(defaultFragment, true);
+                openFragment(defaultFragment, "up");
                 return super.onOptionsItemSelected(menuItem);
         }
     }
 
-    private void openFragment(Fragment fragment, Boolean toLeft) {
+    private void openFragment(Fragment fragment, String start) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        if(!toLeft)
-            transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right, 0, 0);
-        else
-            transaction.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, 0, 0);
+        switch (start) {
+            case "left":
+                transaction.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right, 0, 0);
+                break;
+            case "right":
+                transaction.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left, 0, 0);
+                break;
+            case "up":
+        }
         transaction.replace(R.id.main_container, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
@@ -92,8 +107,28 @@ public class MainActivity extends BaseActivity implements BottomNavigationView.O
         return this;
     }
 
+    private void challengeUser(Boolean show){
+        if(show){
+            navigationLayout.setVisibility(View.INVISIBLE);
+            openFragment(MainFingerprintFragment.newInstance(), "up");
+        } else {
+            navigationLayout.setVisibility(View.VISIBLE);
+            openFragment(MainHomeFragment.newInstance(), "right");
+        }
+    }
+
     @Override
     public void onListFragmentInteraction(Notification item) {
         //TODO: Remove
+    }
+
+    @Override
+    public void onFingerprintSuccess(String string) {
+        challengeUser(false);
+    }
+
+    @Override
+    public void onFingerprintError(String error) {
+
     }
 }

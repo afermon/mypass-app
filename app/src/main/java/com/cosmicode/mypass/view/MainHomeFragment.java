@@ -104,7 +104,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFingerprintListener");
         }
     }
 
