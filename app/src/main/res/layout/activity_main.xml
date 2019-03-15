@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:design="http://schemas.android.com/apk/res-auto"
@@ -12,29 +12,41 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        app:layout_constraintBottom_toTopOf="@+id/navigation_border"
+        app:layout_constraintBottom_toTopOf="@+id/navigation_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <View
-        android:id="@+id/navigation_border"
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/navigation_layout"
         android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="@color/light"
-        app:layout_constraintBottom_toTopOf="@+id/navigation_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"></View>
-    <android.support.design.widget.BottomNavigationView
-        android:id="@+id/navigation_view"
-        design:menu="@menu/bottom_nav_items"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:labelVisibilityMode="unlabeled"/>
+        app:layout_constraintStart_toStartOf="parent">
 
-</android.support.constraint.ConstraintLayout>
+        <View
+            android:id="@+id/navigation_border"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="@color/light"
+            app:layout_constraintBottom_toTopOf="@+id/navigation_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"></View>
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            app:labelVisibilityMode="unlabeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            design:menu="@menu/bottom_nav_items" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Roomie</string>
+    <string name="app_name">MyPass</string>
 
-    <!-- Roomie API -->
-    <string name="roomie_api_server_prod" translatable="false">https://prod-roomie-web.herokuapp.com/api/</string>
-    <string name="roomie_api_server_staging" translatable="false">https://staging-roomie-web.herokuapp.com/api/</string>
-    <string name="roomie_api_server_dev" translatable="false">https://dev-roomie-web.herokuapp.com/api/</string>
-    <string name="roomie_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
+    <!-- MyPass API -->
+    <string name="mypass_api_server_prod" translatable="false">https://prod-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_staging" translatable="false">https://staging-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_dev" translatable="false">https://dev-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
 
     <!-- Facebook login -->
     <string name="fb_login_protocol_scheme" translatable="false">fb235433017402895</string>
@@ -78,6 +78,16 @@
     <string name="bottom_nav_account">Account</string>
     <string name="bottom_nav_menu">Menu</string>
     <string name="login_or">Or</string>
+    <string name="none">none</string>
+
+    <string name="copy_password">Copy Password</string>
+    <string name="copy_username">Copy Username</string>
+    <string name="copied_toast">Copied to clipboard</string>
+    <string name="show_password">Show Password</string>
+    <string name="share">Share</string>
+
+    <string name="fingerprint_tittle">Fingerprint Authentication</string>
+    <string name="fingerprint_instructions">Place your fingertip on the Home button to verify your identity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
