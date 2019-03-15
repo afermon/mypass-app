@@ -2,10 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cosmicode.mypass">
 
+
+
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-feature android:name="android.hardware.fingerprint" android:required="true"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <application
         android:name="com.cosmicode.mypass.MyPassApplication"
@@ -40,6 +44,7 @@
         <activity android:name="com.cosmicode.mypass.RecoverPasswordActivity" />
         <activity android:name="com.cosmicode.mypass.RegisterActivity" />
         <activity android:name="com.cosmicode.mypass.LoginActivity"/>
+        <activity android:name="com.cosmicode.mypass.FingerprintActivity"/>
         <activity android:name="com.cosmicode.mypass.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

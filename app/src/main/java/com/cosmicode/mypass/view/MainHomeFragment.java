@@ -27,6 +27,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -103,7 +104,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             mListener = (OnFragmentInteractionListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
+                    + " must implement OnFingerprintListener");
         }
     }
 
@@ -265,6 +266,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             return new FolderViewHolder(view);
         }
 
+        @SuppressLint("RestrictedApi")
         @Override
         public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder) {
             FolderViewHolder headerHolder = (FolderViewHolder) holder;
@@ -275,6 +277,43 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             String count = String.valueOf(folder.getSecrets().size());
             if (count.equals("0")) count = getString(R.string.none);
             headerHolder.folderCountTextView.setText("(" + count +")");
+
+            headerHolder.folderSettings.setOnClickListener(v -> {
+                PopupMenu popup = new PopupMenu(v.getContext(), v);
+                popup.getMenuInflater().inflate(R.menu.folder_options, popup.getMenu());
+                popup.setOnMenuItemClickListener(item -> {
+                    switch (item.getItemId()) {
+                        case R.id.share:
+                            Toast.makeText(
+                                    v.getContext(),
+                                    "Not implemented yet",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                        case R.id.edit:
+                            Toast.makeText(
+                                    v.getContext(),
+                                    "Not implemented yet",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                        case R.id.delete:
+                            Toast.makeText(
+                                    v.getContext(),
+                                    "Not implemented yet",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                            return true;
+                    }
+
+                    return true;
+                });
+
+                MenuPopupHelper menuHelper = new MenuPopupHelper(v.getContext(), (MenuBuilder) popup.getMenu(), v);
+                menuHelper.setForceShowIcon(true);
+                menuHelper.setGravity(Gravity.END);
+                menuHelper.show();
+            });
         }
     }
 
@@ -282,11 +321,13 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
         private final TextView folderNameTextView;
         private final TextView folderCountTextView;
+        private final ImageView folderSettings;
 
         FolderViewHolder(View view) {
             super(view);
             folderNameTextView = view.findViewById(R.id.folder_name);
             folderCountTextView = view.findViewById(R.id.folder_count);
+            folderSettings = view.findViewById(R.id.folder_settings);
         }
     }
 

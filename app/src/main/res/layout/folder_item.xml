@@ -44,14 +44,14 @@
         app:layout_constraintGuide_percent="0.8" />
 
     <ImageView
-        android:id="@+id/imageView5"
+        android:id="@+id/folder_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline7"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/icon_tool_red" />
+        app:srcCompat="@drawable/icon_tool_indigo" />
 
     <TextView
         android:id="@+id/folder_count"
