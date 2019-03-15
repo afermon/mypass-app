@@ -44,7 +44,6 @@
         <activity android:name="com.cosmicode.mypass.RecoverPasswordActivity" />
         <activity android:name="com.cosmicode.mypass.RegisterActivity" />
         <activity android:name="com.cosmicode.mypass.LoginActivity"/>
-        <activity android:name="com.cosmicode.mypass.FingerprintActivity"/>
         <activity android:name="com.cosmicode.mypass.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
