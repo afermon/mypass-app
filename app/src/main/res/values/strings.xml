@@ -8,11 +8,11 @@
     <string name="mypass_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
 
     <!-- Facebook login -->
-    <string name="fb_login_protocol_scheme" translatable="false">fb235433017402895</string>
-    <string name="facebook_app_id" translatable="false">235433017402895</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb780837828967053</string>
+    <string name="facebook_app_id" translatable="false">780837828967053</string>
 
     <!-- Google login -->
-    <string name="default_web_client_id" translatable="false">64621209556-l09m88enb8afsn04sbeb111shpoq1etf.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">907608270145-ne25o32curu5at5ij3n0gbjfc17nqju5.apps.googleusercontent.com</string>
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>

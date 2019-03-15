@@ -5,7 +5,6 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cosmicode.mypass.BaseActivity;
-import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.domain.Secret;
 import com.cosmicode.mypass.util.network.ApiServiceGenerator;
 

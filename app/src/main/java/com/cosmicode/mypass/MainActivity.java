@@ -16,15 +16,13 @@ import butterknife.ButterKnife;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.cosmicode.mypass.domain.Notification;
 import com.cosmicode.mypass.view.MainHomeFragment;
-import com.cosmicode.mypass.view.MainNotificationFragment;
 import com.cosmicode.mypass.view.MainOptionsFragment;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
-public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener, MainNotificationFragment.OnListFragmentInteractionListener {
+public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener {
 
     // Variables
     @BindView(R.id.navigation_view) BottomNavigationView navigationView;
@@ -115,11 +113,6 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
             navigationLayout.setVisibility(View.VISIBLE);
             openFragment(MainHomeFragment.newInstance(), "right");
         }
-    }
-
-    @Override
-    public void onListFragmentInteraction(Notification item) {
-        //TODO: Remove
     }
 
     @Override

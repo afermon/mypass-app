@@ -4,11 +4,6 @@
         android:icon="@drawable/ic_action_lock"
         android:title="@string/bottom_nav_home" />
     <item
-        android:id="@+id/navigation_view_notifications"
-        android:title="@string/bottom_nav_notifications"
-        android:icon="@drawable/ic_action_notification"
-        />
-    <item
         android:id="@+id/navigation_view_options"
         android:title="@string/bottom_nav_menu"
         android:icon="@drawable/ic_action_menu" />
