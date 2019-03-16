@@ -29,7 +29,7 @@ public class SecretService {
     public void getUserScrets(){
         SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
 
-        Call<List<Secret>> call = apiService.getSecrets();
+        Call<List<Secret>> call = apiService.getUserSecrets();
 
         call.enqueue(new Callback<List<Secret>>() {
             @Override
@@ -37,24 +37,98 @@ public class SecretService {
                 if (response.code() == 200) { // OK
                     listener.OnGetSecretsSuccess(response.body());
                 } else {
-                    Log.e(TAG, Integer.toString(response.code()));
-                    listener.OnGetSecretsError("ERROR getting resources");
+                    Log.e(TAG, response.toString());
+                    listener.OnSecretActionError(Integer.toString(response.code()));
                 }
             }
 
             @Override
             public void onFailure(Call<List<Secret>> call, Throwable t) {
-                Toast.makeText(context, "Something went wrong!",
-                        Toast.LENGTH_LONG).show();
-                listener.OnGetSecretsError("Something went wrong!");
+                Log.e(TAG, t.toString());
+                listener.OnSecretActionError(t.getMessage());
             }
         });
 
     }
 
+    public void createSecret(Secret secret){
+        SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
+
+        Call<Secret> call = apiService.createSecret(secret);
+
+        call.enqueue(new Callback<Secret>() {
+            @Override
+            public void onResponse(Call<Secret> call, Response<Secret> response) {
+                if (response.code() == 201) { // OK
+                    listener.OnCreateSecretSuccess(response.body());
+                } else {
+                    Log.e(TAG, response.toString());
+                    listener.OnSecretActionError(Integer.toString(response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Secret> call, Throwable t) {
+                Log.e(TAG, t.toString());
+                listener.OnSecretActionError(t.getMessage());
+            }
+        });
+    }
+
+    public void updateSecret(Secret secret){
+        SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
+
+        Call<Secret> call = apiService.updateSecret(secret);
+
+        call.enqueue(new Callback<Secret>() {
+            @Override
+            public void onResponse(Call<Secret> call, Response<Secret> response) {
+                if (response.code() == 201) { // OK
+                    listener.OnUpdateSecretSuccess(response.body());
+                } else {
+                    Log.e(TAG, response.toString());
+                    listener.OnSecretActionError(Integer.toString(response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Secret> call, Throwable t) {
+                Log.e(TAG, t.toString());
+                listener.OnSecretActionError(t.getMessage());
+            }
+        });
+    }
+
+    public void deleteSecret(Secret secret){
+        SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
+
+        Call<Void> call = apiService.deleteSecret(secret.getId());
+
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.code() == 200) { // OK
+                    listener.OnDeleteSecretSuccess(secret.getId());
+                } else {
+                    Log.e(TAG, response.toString());
+                    listener.OnSecretActionError(Integer.toString(response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e(TAG, t.toString());
+                listener.OnSecretActionError(t.getMessage());
+            }
+        });
+    }
+
     public interface SecretServiceListener {
         void OnGetSecretsSuccess(List<Secret> notifications);
-        void OnGetSecretsError(String error);
+        void OnCreateSecretSuccess(Secret secret);
+        void OnUpdateSecretSuccess(Secret secret);
+        void OnDeleteSecretSuccess(Long id);
+        void OnSecretActionError(String error);
     }
 
 }

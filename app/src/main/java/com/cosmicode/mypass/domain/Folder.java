@@ -12,7 +12,7 @@ public class Folder {
     private String icon;
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
     @SerializedName("key")
     @Expose
     private String key;
@@ -35,7 +35,7 @@ public class Folder {
     @Expose
     private List<JhiAccount> sharedWiths = null;
 
-    public Folder(String icon, Integer id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
+    public Folder(String icon, Long id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
         this.icon = icon;
         this.id = id;
         this.key = key;
@@ -55,11 +55,11 @@ public class Folder {
         this.icon = icon;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

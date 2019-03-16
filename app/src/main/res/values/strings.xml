@@ -90,4 +90,6 @@
     <string name="fingerprint_instructions">Place your fingertip on the Home button to verify your identity</string>
 
     <string name="no_data">No resources found, please start creating!</string>
+    <string name="something_wrong">Something went wrong!</string>
+    <string name="deleted_msg">Deleted</string>
 </resources>
