@@ -134,7 +134,7 @@ public class FolderService {
         call.enqueue(new Callback<Folder>() {
             @Override
             public void onResponse(Call<Folder> call, Response<Folder> response) {
-                if (response.code() == 201) { // OK
+                if (response.code() == 200) { // OK
                     listener.OnUpdateFolderSuccess(response.body());
                 } else {
                     Log.e(TAG, response.toString());

@@ -27,6 +27,6 @@ public interface FolderApiEndpointInterface {
     @DELETE("folders/{id}")
     Call<Void> deleteFolder(@Path("id") Long id);
 
-    @DELETE("folders/share/{id}")
+    @POST("folders/share/{id}")
     Call<Folder> shareFolder(@Path("id") Long id, @Body String email);
 }

@@ -92,4 +92,8 @@
     <string name="no_data">No resources found, please start creating!</string>
     <string name="something_wrong">Something went wrong!</string>
     <string name="deleted_msg">Deleted</string>
+    <string name="share_title">Who do you want to share the folder with?</string>
+    <string name="share_desc">Please enter the user email. The user must be a MyPass user.</string>
+    <string name="share_success">Folder shared successfully.</string>
+
 </resources>
