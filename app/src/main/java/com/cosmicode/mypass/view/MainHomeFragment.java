@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -161,8 +160,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @Override
     public void OnDeleteFolderSuccess(Long id) {
         Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
-        showProgress(true);
-        folderService.getUserFolders(true);
+        updateFolderSecretList();
     }
 
     @Override
@@ -192,12 +190,13 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     @Override
     public void OnDeleteSecretSuccess(Long id) {
-
+        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
+        updateFolderSecretList();
     }
 
     @Override
     public void OnSecretActionError(String error) {
-
+        Toast.makeText(getContext(), getString(R.string.something_wrong)+ " " + error, Toast.LENGTH_LONG).show();
     }
 
     public interface OnFragmentInteractionListener {
@@ -295,11 +294,10 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             ).show();
                             return true;
                         case R.id.delete:
-                            Toast.makeText(
-                                    v.getContext(),
-                                    "Not implemented yet",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            new AlertDialog.Builder(getContext())
+                                    .setMessage("Are you sure you want to delete the secret " + secret.getName() + "?")
+                                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> folderService.deleteFolder(folder))
+                                    .setNegativeButton(android.R.string.no, null).show();
                             return true;
                     }
 
@@ -351,7 +349,10 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             ).show();
                             return true;
                         case R.id.delete:
-                            deleteFolder(folder);
+                            new AlertDialog.Builder(getContext())
+                                    .setMessage("Are you sure you want to delete the folder " + folder.getName() + "?")
+                                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> folderService.deleteFolder(folder))
+                                    .setNegativeButton(android.R.string.no, null).show();
                             return true;
                     }
 
@@ -394,10 +395,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         }
     }
 
-    private void deleteFolder(Folder folder) {
-        new AlertDialog.Builder(getContext())
-                .setMessage("Are you sure you want to delete the folder " + folder.getName() + "?")
-                .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> folderService.deleteFolder(folder))
-                .setNegativeButton(android.R.string.no, null).show();
+    private void updateFolderSecretList(){
+        showProgress(true);
+        folderService.getUserFolders(true);
     }
 }
