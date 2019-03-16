@@ -7,9 +7,6 @@ import java.util.List;
 
 public class Folder {
 
-    @SerializedName("icon")
-    @Expose
-    private String icon;
     @SerializedName("id")
     @Expose
     private Long id;
@@ -35,8 +32,7 @@ public class Folder {
     @Expose
     private List<JhiAccount> sharedWiths = null;
 
-    public Folder(String icon, Long id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
-        this.icon = icon;
+    public Folder(Long id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
         this.id = id;
         this.key = key;
         this.modified = modified;
@@ -45,14 +41,6 @@ public class Folder {
         this.ownerLogin = ownerLogin;
         this.secrets = secrets;
         this.sharedWiths = sharedWiths;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
     }
 
     public Long getId() {
@@ -122,8 +110,7 @@ public class Folder {
     @Override
     public String toString() {
         return "Folder{" +
-                "icon='" + icon + '\'' +
-                ", id=" + id +
+                "id=" + id +
                 ", key='" + key + '\'' +
                 ", modified='" + modified + '\'' +
                 ", name='" + name + '\'' +

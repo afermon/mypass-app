@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.domain.Secret;
+import com.cosmicode.mypass.util.EncryptionHelper;
 import com.cosmicode.mypass.util.network.ApiServiceGenerator;
 
 import java.util.List;
@@ -51,7 +52,16 @@ public class SecretService {
 
     }
 
-    public void createSecret(Secret secret){
+    public void createSecret(Secret secret, String folderKey){
+
+        if(secret.getNewPassword() != null){
+            try {
+                secret.setPassword(EncryptionHelper.encrypt(folderKey, secret.getNewPassword()));
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
+
         SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
 
         Call<Secret> call = apiService.createSecret(secret);
@@ -75,7 +85,16 @@ public class SecretService {
         });
     }
 
-    public void updateSecret(Secret secret){
+    public void updateSecret(String folderKey, Secret secret){
+
+        if(secret.getNewPassword() != null){
+            try {
+                secret.setPassword(EncryptionHelper.encrypt(folderKey, secret.getNewPassword()));
+            } catch (Exception e) {
+                Log.e(TAG, e.toString());
+            }
+        }
+
         SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
 
         Call<Secret> call = apiService.updateSecret(secret);
