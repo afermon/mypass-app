@@ -7,10 +7,14 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -46,6 +50,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     private OnFragmentInteractionListener mListener;
     private SectionedRecyclerViewAdapter sectionAdapter;
+    private final static String TAG = "MainHomeFragment";
 
     @BindView(R.id.secrets_list)
     RecyclerView recyclerView;
@@ -130,6 +135,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @Override
     public void OnGetFoldersSuccess(List<Folder> folders) {
         folderList = folders;
+        Log.d(TAG, folders.toString());
+
         sectionAdapter = new SectionedRecyclerViewAdapter();
 
         if (folderList.size() > 0) {
@@ -149,12 +156,12 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     @Override
     public void OnCreateFolderSuccess(Folder folder) {
-
+        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void OnUpdateFolderSuccess(Folder folder) {
-
+        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -165,7 +172,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     @Override
     public void OnShareFolderSuccess(Folder folder) {
-
+        Toast.makeText(getContext(), R.string.share_success, Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -266,6 +273,12 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             itemHolder.rootView.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
                 popup.getMenuInflater().inflate(R.menu.secret_options, popup.getMenu());
+                if (!folder.getOwnerLogin().equals(((BaseActivity)getActivity()).getJhiUsers().getLogedUserLogin())) {
+                    //If user not owner then remove edit and delete options from menu.
+                    Menu menu = popup.getMenu();
+                    menu.removeItem(R.id.edit);
+                    menu.removeItem(R.id.delete);
+                }
                 popup.setOnMenuItemClickListener(item -> {
 
                     Object clipboardService = v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
@@ -296,7 +309,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                         case R.id.delete:
                             new AlertDialog.Builder(getContext())
                                     .setMessage("Are you sure you want to delete the secret " + secret.getName() + "?")
-                                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> folderService.deleteFolder(folder))
+                                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> secretService.deleteSecret(secret))
                                     .setNegativeButton(android.R.string.no, null).show();
                             return true;
                     }
@@ -324,10 +337,16 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
             headerHolder.folderNameTextView.setText(folder.getName());
 
+            if (!folder.getOwnerLogin().equals(((BaseActivity)getActivity()).getJhiUsers().getLogedUserLogin())) {
+                headerHolder.folderCountTextView.setText("(" + folder.getOwnerLogin() + ")");
+                headerHolder.folderSettings.setVisibility(View.INVISIBLE);
+            } else {
+                String count = String.valueOf(folder.getSecrets().size());
+                if (count.equals("0")) count = getString(R.string.none);
+                headerHolder.folderCountTextView.setText("(" + count + ")");
+            }
 
-            String count = String.valueOf(folder.getSecrets().size());
-            if (count.equals("0")) count = getString(R.string.none);
-            headerHolder.folderCountTextView.setText("(" + count + ")");
+
 
             headerHolder.folderSettings.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
@@ -335,11 +354,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 popup.setOnMenuItemClickListener(item -> {
                     switch (item.getItemId()) {
                         case R.id.share:
-                            Toast.makeText(
-                                    v.getContext(),
-                                    "Not implemented yet",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            shareFolder(folder);
                             return true;
                         case R.id.edit:
                             Toast.makeText(
@@ -365,6 +380,18 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 menuHelper.show();
             });
         }
+    }
+
+    private void shareFolder(Folder folder) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.share_title);
+        builder.setMessage(R.string.share_desc);
+        final EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(input);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> folderService.shareFolder(folder, input.getText().toString()));
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.show();
     }
 
     private class FolderViewHolder extends RecyclerView.ViewHolder {

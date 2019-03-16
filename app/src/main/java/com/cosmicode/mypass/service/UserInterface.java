@@ -33,6 +33,8 @@ public interface UserInterface {
 
     void getLogedUser(OnUserAvailableListener listener);
 
+    String getLogedUserLogin();
+
     String getAuthToken();
 
     void loginWithFacebook(String token, OnLoginListener listener);

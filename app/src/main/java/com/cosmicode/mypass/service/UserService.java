@@ -298,6 +298,11 @@ public class UserService implements UserInterface {
     }
 
     @Override
+    public String getLogedUserLogin() {
+        return mypassUser.getEmail();
+    }
+
+    @Override
     public String getAuthToken() {
         return authToken;
     }
