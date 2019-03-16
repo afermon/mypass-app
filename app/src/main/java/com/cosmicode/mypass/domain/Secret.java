@@ -1,9 +1,14 @@
 package com.cosmicode.mypass.domain;
 
+import android.util.Log;
+
+import com.cosmicode.mypass.util.EncryptionHelper;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Secret {
+
+    private static final String TAG = "Secret";
 
     @SerializedName("created")
     @Expose
@@ -41,6 +46,8 @@ public class Secret {
     @SerializedName("username")
     @Expose
     private String username;
+
+    private String newPassword;
 
     public Secret(String created, Long folderId, String folderName, Long id, String modified, String name, String notes, Long ownerId, String ownerLogin, String password, String url, String username) {
         this.created = created;
@@ -151,6 +158,23 @@ public class Secret {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPasswordDecrypted(String folderKey) {
+        try {
+            return EncryptionHelper.decrypt(folderKey, this.password);
+        } catch (Exception e) {
+            Log.e(TAG, e.toString());
+            return "";
+        }
+    }
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
     }
 
     @Override

@@ -279,12 +279,12 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             Snackbar.make(v, R.string.copied_toast, Snackbar.LENGTH_LONG).show();
                             return true;
                         case R.id.copy_password:
-                            clipData = ClipData.newPlainText(getString(R.string.app_name), secret.getPassword());
+                            clipData = ClipData.newPlainText(getString(R.string.app_name), secret.getPasswordDecrypted(folder.getKey()));
                             clipboardManager.setPrimaryClip(clipData);
                             Snackbar.make(v, R.string.copied_toast, Snackbar.LENGTH_LONG).show();
                             return true;
                         case R.id.show_password:
-                            Snackbar.make(v, secret.getPassword(), Snackbar.LENGTH_LONG).show();
+                            Snackbar.make(v, secret.getPasswordDecrypted(folder.getKey()), Snackbar.LENGTH_LONG).show();
                             return true;
                         case R.id.edit:
                             Toast.makeText(

@@ -2,10 +2,10 @@ package com.cosmicode.mypass.service;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.domain.Folder;
+import com.cosmicode.mypass.util.EncryptionHelper;
 import com.cosmicode.mypass.util.network.ApiServiceGenerator;
 
 import java.util.List;
@@ -52,6 +52,9 @@ public class FolderService {
     }
 
     public void createFolder(Folder folder){
+
+        folder.setKey(EncryptionHelper.generateRandomString()); // Generate encryption key for the folder secrets
+
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
         Call<Folder> call = apiService.createFolder(folder);
