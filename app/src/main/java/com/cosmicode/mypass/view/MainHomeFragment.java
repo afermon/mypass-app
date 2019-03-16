@@ -7,24 +7,8 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.view.menu.MenuBuilder;
-import androidx.appcompat.view.menu.MenuPopupHelper;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
-import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
-import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
-
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,23 +21,45 @@ import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
 import com.cosmicode.mypass.service.FolderService;
+import com.cosmicode.mypass.service.SecretService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.menu.MenuBuilder;
+import androidx.appcompat.view.menu.MenuPopupHelper;
+import androidx.appcompat.widget.PopupMenu;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
+import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
+import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
-public class MainHomeFragment extends Fragment implements FolderService.FolderServiceListener {
+public class MainHomeFragment extends Fragment implements FolderService.FolderServiceListener, SecretService.SecretServiceListener {
 
     private OnFragmentInteractionListener mListener;
     private SectionedRecyclerViewAdapter sectionAdapter;
 
-    @BindView(R.id.secrets_list) RecyclerView recyclerView;
-    @BindView(R.id.progress_bar) ProgressBar progressBar;
-    @BindView(R.id.create_fab) FloatingActionButton createFloatingActionButton;
+    @BindView(R.id.secrets_list)
+    RecyclerView recyclerView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    @BindView(R.id.create_fab)
+    FloatingActionButton createFloatingActionButton;
+    @BindView(R.id.no_resources)
+    ConstraintLayout noResourcesMessage;
 
     private FolderService folderService;
+    private SecretService secretService;
+
+    private List<Folder> folderList;
 
     public MainHomeFragment() {
         // Required empty public constructor
@@ -70,6 +76,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         folderService = new FolderService(getContext(), this);
+        secretService = new SecretService(getContext(), this);
     }
 
     @Override
@@ -122,20 +129,74 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     @Override
     public void OnGetFoldersSuccess(List<Folder> folders) {
+        folderList = folders;
         sectionAdapter = new SectionedRecyclerViewAdapter();
 
-        for (Folder folder: folders) {
-            sectionAdapter.addSection(new FolderSection(folder));
-        }
+        if (folderList.size() > 0) {
+            noResourcesMessage.setVisibility(View.INVISIBLE);
+            for (Folder folder : folderList) {
+                sectionAdapter.addSection(new FolderSection(folder));
+            }
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(sectionAdapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(sectionAdapter);
+
+        } else
+            noResourcesMessage.setVisibility(View.VISIBLE);
+
         showProgress(false);
     }
 
     @Override
-    public void OnGetFoldersError(String error) {
+    public void OnCreateFolderSuccess(Folder folder) {
 
+    }
+
+    @Override
+    public void OnUpdateFolderSuccess(Folder folder) {
+
+    }
+
+    @Override
+    public void OnDeleteFolderSuccess(Long id) {
+        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
+        updateFolderSecretList();
+    }
+
+    @Override
+    public void OnShareFolderSuccess(Folder folder) {
+
+    }
+
+    @Override
+    public void OnFolderActionError(String error) {
+        Toast.makeText(getContext(), getString(R.string.something_wrong)+ " " + error, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void OnGetSecretsSuccess(List<Secret> notifications) {
+
+    }
+
+    @Override
+    public void OnCreateSecretSuccess(Secret secret) {
+
+    }
+
+    @Override
+    public void OnUpdateSecretSuccess(Secret secret) {
+
+    }
+
+    @Override
+    public void OnDeleteSecretSuccess(Long id) {
+        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
+        updateFolderSecretList();
+    }
+
+    @Override
+    public void OnSecretActionError(String error) {
+        Toast.makeText(getContext(), getString(R.string.something_wrong)+ " " + error, Toast.LENGTH_LONG).show();
     }
 
     public interface OnFragmentInteractionListener {
@@ -182,15 +243,6 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             this.folder = folder;
         }
 
-        FolderSection(Folder folder, List<Secret> secrets) {
-            super(SectionParameters.builder()
-                    .itemResourceId(R.layout.secret_item)
-                    .headerResourceId(R.layout.folder_item)
-                    .build());
-            this.folder = folder;
-            this.folder.setSecrets(secrets);
-        }
-
         @Override
         public int getContentItemsTotal() {
             return this.folder.getSecrets().size();
@@ -208,8 +260,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
             Secret secret = this.folder.getSecrets().get(position);
 
-            itemHolder.secretUsernameTextView.setText(secret.getName());
-            itemHolder.secretNameTextView.setText(secret.getUsername());
+            itemHolder.secretNameTextView.setText(secret.getName());
+            itemHolder.secretUsernameTextView.setText(secret.getUsername());
 
             itemHolder.rootView.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
@@ -217,7 +269,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 popup.setOnMenuItemClickListener(item -> {
 
                     Object clipboardService = v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                    final ClipboardManager clipboardManager = (ClipboardManager)clipboardService;
+                    final ClipboardManager clipboardManager = (ClipboardManager) clipboardService;
                     ClipData clipData;
 
                     switch (item.getItemId()) {
@@ -242,11 +294,10 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             ).show();
                             return true;
                         case R.id.delete:
-                            Toast.makeText(
-                                    v.getContext(),
-                                    "Not implemented yet",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            new AlertDialog.Builder(getContext())
+                                    .setMessage("Are you sure you want to delete the secret " + secret.getName() + "?")
+                                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> folderService.deleteFolder(folder))
+                                    .setNegativeButton(android.R.string.no, null).show();
                             return true;
                     }
 
@@ -276,7 +327,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
             String count = String.valueOf(folder.getSecrets().size());
             if (count.equals("0")) count = getString(R.string.none);
-            headerHolder.folderCountTextView.setText("(" + count +")");
+            headerHolder.folderCountTextView.setText("(" + count + ")");
 
             headerHolder.folderSettings.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
@@ -298,11 +349,10 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             ).show();
                             return true;
                         case R.id.delete:
-                            Toast.makeText(
-                                    v.getContext(),
-                                    "Not implemented yet",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            new AlertDialog.Builder(getContext())
+                                    .setMessage("Are you sure you want to delete the folder " + folder.getName() + "?")
+                                    .setPositiveButton(android.R.string.yes, (dialog, whichButton) -> folderService.deleteFolder(folder))
+                                    .setNegativeButton(android.R.string.no, null).show();
                             return true;
                     }
 
@@ -343,5 +393,10 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             secretNameTextView = view.findViewById(R.id.secret_name);
             secretUsernameTextView = view.findViewById(R.id.secret_username);
         }
+    }
+
+    private void updateFolderSecretList(){
+        showProgress(true);
+        folderService.getUserFolders(true);
     }
 }

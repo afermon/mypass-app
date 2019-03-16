@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -25,6 +26,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener {
 
     // Variables
+    private static String TAG = "MainActivity";
     @BindView(R.id.navigation_view) BottomNavigationView navigationView;
     @BindView(R.id.navigation_layout) ConstraintLayout navigationLayout;
 
@@ -57,7 +59,7 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
                 openFragment(homeFragment, "left");
                 return true;
             case R.id.navigation_view_options:
-                MainOptionsFragment optionsFragment = MainOptionsFragment.newInstance("", "");
+                MainOptionsFragment optionsFragment = MainOptionsFragment.newInstance();
                 openFragment(optionsFragment, "right");
                 return true;
             default:
@@ -88,13 +90,13 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
             GoogleSignInOptions gso = (new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)).requestServerAuthCode(getString(R.string.default_web_client_id)).requestEmail().build();
             GoogleSignIn.getClient(this, gso).signOut();
         } catch (Exception e) {
-            //Ignore TODO: LOG
+            Log.e(TAG, e.getMessage());
         }
 
         try {
             LoginManager.getInstance().logOut();
         } catch (Exception e) {
-            //Ignore TODO: LOG
+            Log.e(TAG, e.getMessage());
         }
 
         getJhiUsers().logout();
