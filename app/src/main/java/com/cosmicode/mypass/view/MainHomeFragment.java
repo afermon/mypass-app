@@ -156,7 +156,6 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                         ab.setTitle("Enter the name of the folder");
                         final EditText folderText = new EditText(getContext());
                         ab.setView(folderText);
-
                         ab.setPositiveButton("Create", (dialog1, which1) -> {
                             String folderName = folderText.getText().toString();
                             Folder newFolder = new Folder(null,null,null,folderName,null,null,null,null);
@@ -266,6 +265,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @Override
     public void OnUpdateFolderSuccess(Folder folder) {
         Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
+        updateFolderSecretList();
     }
 
     @Override
@@ -462,11 +462,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             shareFolder(folder);
                             return true;
                         case R.id.edit:
-                            Toast.makeText(
-                                    v.getContext(),
-                                    "Not implemented yet",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                           editFolder(folder);
                             return true;
                         case R.id.delete:
                             new AlertDialog.Builder(getContext())
@@ -485,6 +481,26 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 menuHelper.show();
             });
         }
+    }
+
+    private void editFolder(Folder folder) {
+        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+        ab.setTitle("Edit the name of the folder");
+        final EditText folderText = new EditText(getContext());
+        folderText.setText(folder.getName());
+        ab.setView(folderText);
+
+        ab.setPositiveButton("Update", (dialog1, which1) -> {
+            String folderName = folderText.getText().toString();
+            folder.setName(folderName);
+            folderService.updateFolder(folder);
+            dialog1.dismiss();
+        });
+
+        ab.setNegativeButton("Cancel", (dialog16, which16) -> dialog16.dismiss());
+
+        AlertDialog a = ab.create();
+        a.show();
     }
 
     private void shareFolder(Folder folder) {
