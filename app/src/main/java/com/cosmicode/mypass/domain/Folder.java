@@ -21,7 +21,7 @@ public class Folder {
     private String name;
     @SerializedName("ownerId")
     @Expose
-    private Integer ownerId;
+    private Long ownerId;
     @SerializedName("ownerLogin")
     @Expose
     private String ownerLogin;
@@ -32,7 +32,7 @@ public class Folder {
     @Expose
     private List<JhiAccount> sharedWiths = null;
 
-    public Folder(Long id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
+    public Folder(Long id, String key, String modified, String name, Long ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
         this.id = id;
         this.key = key;
         this.modified = modified;
@@ -75,11 +75,11 @@ public class Folder {
         this.name = name;
     }
 
-    public Integer getOwnerId() {
+    public Long getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Integer ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 

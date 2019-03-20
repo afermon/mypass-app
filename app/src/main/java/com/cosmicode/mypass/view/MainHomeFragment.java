@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -14,13 +15,16 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cosmicode.mypass.BaseActivity;
+import com.cosmicode.mypass.MainActivity;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
@@ -29,6 +33,7 @@ import com.cosmicode.mypass.service.SecretService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -61,10 +66,16 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @BindView(R.id.no_resources)
     ConstraintLayout noResourcesMessage;
 
+
     private FolderService folderService;
     private SecretService secretService;
 
     private List<Folder> folderList;
+    private  Folder[] folderArray;
+    private String[] folderNames;
+    //options
+    String[] listItems;
+
 
     public MainHomeFragment() {
         // Required empty public constructor
@@ -83,7 +94,6 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderService = new FolderService(getContext(), this);
         secretService = new SecretService(getContext(), this);
     }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -130,6 +140,99 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     public void onViewCreated(View view, Bundle savedInstanceState) {
         showProgress(true);
         folderService.getUserFolders(true);
+
+
+            createFloatingActionButton.setOnClickListener(v -> {
+                listItems = new String[]{"Folder","Password"};
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+                mBuilder.setTitle("What do you want to create?");
+                mBuilder.setIcon(R.drawable.icon);
+                mBuilder.setSingleChoiceItems(listItems, -1, (dialog, which) -> {
+
+                    //If is 0 is a Folder, if is 1 is a password
+                    if(which == 0){
+                        dialog.dismiss();
+                        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
+                        ab.setTitle("Enter the name of the folder");
+                        final EditText folderText = new EditText(getContext());
+                        ab.setView(folderText);
+
+                        ab.setPositiveButton("Create", (dialog1, which1) -> {
+                            String folderName = folderText.getText().toString();
+                            Folder newFolder = new Folder(null,null,null,folderName,null,null,null,null);
+                            folderService.createFolder(newFolder);
+                            dialog1.dismiss();
+                        });
+
+                        ab.setNegativeButton("Cancel", (dialog16, which16) -> dialog16.dismiss());
+
+                        AlertDialog a = ab.create();
+                        a.show();
+                    }else{
+
+                        dialog.dismiss();
+
+                        AlertDialog.Builder sBuilder = new AlertDialog.Builder(getContext());
+                        sBuilder.setTitle("Choose a folder");
+                        sBuilder.setIcon(R.drawable.icon);
+                        folderArray = new Folder[folderList.size()];
+                        folderArray = folderList.toArray(folderArray);
+                        extractFolderName();
+
+                        sBuilder.setSingleChoiceItems(folderNames, -1, (dialog14, which14) -> {
+                            dialog14.dismiss();
+                            //get chosen folder
+                            Folder selectFolder = folderList.get(which14);
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+                            LayoutInflater inflater = getActivity().getLayoutInflater();
+                            View view1 = inflater.inflate(R.layout.pass_form, null);
+
+                            builder.setView(view1)
+                                    .setTitle("Fill with Password information")
+                                    .setNegativeButton("Cancel", (dialog15, which15) -> dialog15.dismiss());
+
+
+                                    EditText editTextName = view1.findViewById(R.id.edit_name);
+                                    EditText editTextUrl = view1.findViewById(R.id.edit_url);
+                                    EditText editTextDescription = view1.findViewById(R.id.edit_description);
+                                    EditText editTextPassword = view1.findViewById(R.id.edit_password);
+                                    EditText editTextUsername = view1.findViewById(R.id.edit_username);
+
+                                    builder.setPositiveButton("Create", (dialog12, which12) -> {
+                                        dialog12.dismiss();
+                                        String passName = editTextName.getText().toString();
+                                        String passUrl = editTextUrl.getText().toString();
+                                        String passDescription = editTextDescription.getText().toString();
+                                        String password = editTextPassword.getText().toString();
+                                        String username = editTextUsername.getText().toString();
+
+                                        //Create secret object
+                                        Secret newSecret = new Secret(selectFolder.getId(),passName,passDescription,selectFolder.getOwnerId(),passUrl,username,password);
+                                        secretService.createSecret(newSecret, selectFolder.getKey());
+                                    });
+
+                            AlertDialog formDialog = builder.create();
+                            formDialog.show();
+                        });
+                        sBuilder.setNegativeButton("Cancel", (dialog13, which13) -> dialog13.dismiss());
+
+                        AlertDialog sDialog = sBuilder.create();
+                        sDialog.show();
+
+                    }
+                });
+
+                mBuilder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+                AlertDialog mDialog = mBuilder.create();
+                mDialog.show();
+            });
+
+
+
+
+
     }
 
     @Override
@@ -157,6 +260,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @Override
     public void OnCreateFolderSuccess(Folder folder) {
         Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
+        updateFolderSecretList();
     }
 
     @Override
@@ -187,7 +291,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     @Override
     public void OnCreateSecretSuccess(Secret secret) {
-
+        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
+        updateFolderSecretList();
     }
 
     @Override
@@ -425,5 +530,12 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     private void updateFolderSecretList(){
         showProgress(true);
         folderService.getUserFolders(true);
+    }
+
+    private void extractFolderName(){
+        folderNames = new String[folderList.size()];
+        for (int i = 0;i< folderList.size(); i++){
+            folderNames[i] = folderArray[i].getName();
+        }
     }
 }
