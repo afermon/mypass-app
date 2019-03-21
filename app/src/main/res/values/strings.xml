@@ -112,5 +112,9 @@
     <string name="update_folder_title">Update folder</string>
     <string name="open_site">Open site</string>
     <string name="uril_empty">Secret URI is empty</string>
+    <string name="error_name">Name can only contain letters, uppercase and lowercase allowed.</string>
+    <string name="error_uri">Must be a valid url</string>
+    <string name="error_username">Username cannot be empty</string>
+    <string name="error_pass">Password cannot be empty</string>
 
 </resources>

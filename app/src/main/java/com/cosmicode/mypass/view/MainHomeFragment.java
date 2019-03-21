@@ -6,11 +6,14 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,6 +26,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.utility.RegexTemplate;
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Folder;
@@ -48,6 +53,8 @@ import butterknife.ButterKnife;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
+
+import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 
 public class MainHomeFragment extends Fragment implements FolderService.FolderServiceListener, SecretService.SecretServiceListener {
 
@@ -179,55 +186,62 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     }
 
     private void createSecret() {
-        AlertDialog.Builder sBuilder = new AlertDialog.Builder(getContext());
-        sBuilder.setTitle(R.string.select_folder);
-        sBuilder.setIcon(R.drawable.icon);
+        AlertDialog.Builder selectFolderDialogBuilder = new AlertDialog.Builder(getContext());
+        selectFolderDialogBuilder.setTitle(R.string.select_folder);
+        selectFolderDialogBuilder.setIcon(R.drawable.icon);
         folderArray = new Folder[folderList.size()];
         folderArray = folderList.toArray(folderArray);
         extractFolderName();
 
-        sBuilder.setSingleChoiceItems(folderNames, -1, (dialog14, which14) -> {
+        selectFolderDialogBuilder.setSingleChoiceItems(folderNames, -1, (dialog14, which14) -> {
             dialog14.dismiss();
             //get chosen folder
             Folder selectFolder = folderList.get(which14);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            AlertDialog.Builder createSecretDialogBuilder = new AlertDialog.Builder(getContext());
 
             LayoutInflater inflater = getActivity().getLayoutInflater();
             View secretFormLayout = inflater.inflate(R.layout.secret_form, null);
 
-            builder.setView(secretFormLayout)
+            createSecretDialogBuilder.setView(secretFormLayout)
                     .setTitle(getString(R.string.secret_create_title))
                     .setNegativeButton(R.string.cancel, (dialog15, which15) -> dialog15.dismiss());
 
             EditText editTextName = secretFormLayout.findViewById(R.id.edit_name);
             EditText editTextUrl = secretFormLayout.findViewById(R.id.edit_url);
             EditText editTextDescription = secretFormLayout.findViewById(R.id.edit_description);
-            EditText editTextPassword = secretFormLayout.findViewById(R.id.edit_password);
             EditText editTextUsername = secretFormLayout.findViewById(R.id.edit_username);
             TextView folderNameTextView = secretFormLayout.findViewById(R.id.folder_name);
             folderNameTextView.setText(selectFolder.getName());
+            EditText editTextPassword = secretFormLayout.findViewById(R.id.edit_password);
 
-            builder.setPositiveButton(R.string.create, (dialog12, which12) -> {
-                dialog12.dismiss();
+            AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
+            mAwesomeValidation.addValidation(editTextName, "[a-zA-Z\\s]+", getString(R.string.error_name));
+            mAwesomeValidation.addValidation(editTextUrl, Patterns.WEB_URL, getString(R.string.error_uri));
+            mAwesomeValidation.addValidation(editTextUsername, RegexTemplate.NOT_EMPTY, getString(R.string.error_username));
+            mAwesomeValidation.addValidation(editTextPassword, RegexTemplate.NOT_EMPTY, getString(R.string.error_pass));
 
-                Secret secret = new Secret();
-                secret.setFolderId(selectFolder.getId());
-                secret.setName(editTextName.getText().toString());
-                secret.setNotes(editTextDescription.getText().toString());
-                secret.setUrl(editTextUrl.getText().toString());
-                secret.setUsername(editTextUsername.getText().toString());
-                String password = editTextPassword.getText().toString();
-                if (!password.equals("")) secret.setNewPassword(password);
-                secretService.createSecret(secret, selectFolder.getKey());
+
+            createSecretDialogBuilder.setPositiveButton(R.string.create, (dialog, which) -> { });
+
+            AlertDialog createSecretDialog = createSecretDialogBuilder.create();
+            createSecretDialog.show();
+            createSecretDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+                if(mAwesomeValidation.validate()) {
+                    Secret secret = new Secret();
+                    secret.setFolderId(selectFolder.getId());
+                    secret.setName(editTextName.getText().toString());
+                    secret.setNotes(editTextDescription.getText().toString());
+                    secret.setUrl(editTextUrl.getText().toString());
+                    secret.setUsername(editTextUsername.getText().toString());
+                    secret.setNewPassword( editTextPassword.getText().toString());
+                    secretService.createSecret(secret, selectFolder.getKey());
+                    createSecretDialog.dismiss();
+                }
             });
 
-            AlertDialog formDialog = builder.create();
-            formDialog.show();
         });
-        sBuilder.setNegativeButton(R.string.cancel, (dialog13, which13) -> dialog13.dismiss());
-
-        AlertDialog sDialog = sBuilder.create();
-        sDialog.show();
+        selectFolderDialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss())
+                .create().show();
     }
 
     private void createFolder() {
@@ -244,19 +258,28 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderNameTexView.setLayoutParams(params);
         dialogContainer.addView(folderNameTexView);
 
+        AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
+        mAwesomeValidation.addValidation(folderNameTexView, "[a-zA-Z\\s]+", getString(R.string.error_name));
+
         createFolderDialogBuilder.setTitle(R.string.create_folder_title)
         .setMessage(getString(R.string.create_folder_message))
         .setView(dialogContainer)
-        .setPositiveButton(R.string.create, (dialog1, which1) -> {
-            String folderName = folderNameTexView.getText().toString();
-            Folder newFolder = new Folder(null, null, null, folderName, null, null, null, null);
-            folderService.createFolder(newFolder);
-            showProgress(true);
-            dialog1.dismiss();
-        })
-        .setNegativeButton(R.string.cancel, (dialog16, which16) -> dialog16.dismiss());
+        .setPositiveButton(R.string.create, (dialog, which) -> { })
+        .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
 
-        createFolderDialogBuilder.create().show();
+        AlertDialog createFolderDialog = createFolderDialogBuilder.create();
+
+        createFolderDialog.show();
+
+        createFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if(mAwesomeValidation.validate()) {
+                String folderName = folderNameTexView.getText().toString();
+                Folder newFolder = new Folder(null, null, null, folderName, null, null, null, null);
+                folderService.createFolder(newFolder);
+                showProgress(true);
+                createFolderDialog.dismiss();
+            }
+        });
     }
 
     private void editFolder(Folder folder) {
@@ -266,6 +289,9 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderNameTexView.setText(folder.getName());
         folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
         folderNameTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
+
+        AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
+        mAwesomeValidation.addValidation(folderNameTexView, "[a-zA-Z\\s]+", getString(R.string.error_name));
 
         FrameLayout dialogContainer = new FrameLayout(getActivity());
         FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -277,22 +303,28 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         editFolderDialogBuilder.setTitle(R.string.update_folder_title)
                 .setMessage(getString(R.string.create_folder_message))
                 .setView(dialogContainer)
-                .setPositiveButton(R.string.update, (dialog1, which1) -> {
-                    folder.setName(folderNameTexView.getText().toString());
-                    folderService.updateFolder(folder);
-                    showProgress(true);
-                    dialog1.dismiss();
-                })
-                .setNegativeButton(R.string.cancel, (dialog16, which16) -> dialog16.dismiss());
+                .setPositiveButton(R.string.update, (dialog, which) -> { })
+                .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
 
-        editFolderDialogBuilder.create().show();
+        AlertDialog editFolderDialog = editFolderDialogBuilder.create();
+        editFolderDialog.show();
+
+        editFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if(mAwesomeValidation.validate()) {
+                String folderName = folderNameTexView.getText().toString();
+                Folder newFolder = new Folder(null, null, null, folderName, null, null, null, null);
+                folderService.createFolder(newFolder);
+                showProgress(true);
+                editFolderDialog.dismiss();
+            }
+        });
     }
 
     private void editSecret(Secret secret, Folder folder) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        AlertDialog.Builder editSecretBuilder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View secretFormView = inflater.inflate(R.layout.secret_form, null);
-        builder.setView(secretFormView)
+        editSecretBuilder.setView(secretFormView)
                 .setTitle(getString(R.string.password_edit_title))
                 .setNegativeButton(R.string.cancel, (dialog15, which15) -> dialog15.dismiss());
 
@@ -303,34 +335,49 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         EditText editTextUsername = secretFormView.findViewById(R.id.edit_username);
         TextView folderNameTextView = secretFormView.findViewById(R.id.folder_name);
 
+        AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
+        mAwesomeValidation.addValidation(editTextName, "[a-zA-Z\\s]+", getString(R.string.error_name));
+        mAwesomeValidation.addValidation(editTextUrl, Patterns.WEB_URL, getString(R.string.error_uri));
+        mAwesomeValidation.addValidation(editTextUsername, RegexTemplate.NOT_EMPTY, getString(R.string.error_username));
+
         editTextName.setText(secret.getName());
         editTextUrl.setText(secret.getUrl());
         editTextDescription.setText(secret.getNotes());
         editTextUsername.setText(secret.getUsername());
         folderNameTextView.setText(folder.getName());
 
-        builder.setPositiveButton(getString(R.string.update), (dialog12, which12) -> {
-            secret.setName(editTextName.getText().toString());
-            secret.setNotes(editTextDescription.getText().toString());
-            secret.setUrl(editTextUrl.getText().toString());
-            secret.setUsername(editTextUsername.getText().toString());
-            String password = editTextPassword.getText().toString();
-            if (!password.equals("")) secret.setNewPassword(password);
-            secretService.updateSecret(folder.getKey(), secret);
-        });
+        editSecretBuilder.setPositiveButton(getString(R.string.update), (dialog, which) -> { });
 
-        AlertDialog formDialog = builder.create();
-        formDialog.show();
+        AlertDialog editSecretDialog = editSecretBuilder.create();
+        editSecretDialog.show();
+
+        editSecretDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if(mAwesomeValidation.validate()) {
+                secret.setName(editTextName.getText().toString());
+                secret.setNotes(editTextDescription.getText().toString());
+                secret.setUrl(editTextUrl.getText().toString());
+                secret.setUsername(editTextUsername.getText().toString());
+                String password = editTextPassword.getText().toString();
+                if (!password.equals("")) secret.setNewPassword(password);
+                secretService.updateSecret(folder.getKey(), secret);
+                editSecretDialog.dismiss();
+            }
+        });
     }
 
     private void shareFolder(Folder folder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(R.string.share_title);
         builder.setMessage(R.string.share_desc);
-        final EditText input = new EditText(getContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        builder.setView(input);
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> folderService.shareFolder(folder, input.getText().toString()));
+        final EditText emailTexView = new EditText(getContext());
+
+        emailTexView.setSingleLine();
+        emailTexView.setText(folder.getName());
+        emailTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_mail_black,0,0,0);
+        emailTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
+        emailTexView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(emailTexView);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> folderService.shareFolder(folder, emailTexView.getText().toString()));
         builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
         builder.show();
     }
@@ -594,5 +641,114 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             secretNameTextView = view.findViewById(R.id.secret_name);
             secretUsernameTextView = view.findViewById(R.id.secret_username);
         }
+    }
+
+    public enum PasswordStrength
+    {
+
+        WEAK(0, Color.RED), MEDIUM(1, Color.argb(255, 220, 185, 0)), STRONG(2, Color.GREEN), VERY_STRONG(3, Color.BLUE);
+
+        //--------REQUIREMENTS--------
+        static int REQUIRED_LENGTH = 6;
+        static int MAXIMUM_LENGTH = 6;
+        static boolean REQUIRE_SPECIAL_CHARACTERS = true;
+        static boolean REQUIRE_DIGITS = true;
+        static boolean REQUIRE_LOWER_CASE = true;
+        static boolean REQUIRE_UPPER_CASE = true;
+
+        int resId;
+        int color;
+
+        PasswordStrength(int resId, int color)
+        {
+            this.resId = resId;
+            this.color = color;
+        }
+
+        public int getValue()
+        {
+            return resId;
+        }
+
+        public int getColor()
+        {
+            return color;
+        }
+
+        public static PasswordStrength calculateStrength(String password)
+        {
+            int currentScore = 0;
+            boolean sawUpper = false;
+            boolean sawLower = false;
+            boolean sawDigit = false;
+            boolean sawSpecial = false;
+
+            for (int i = 0; i < password.length(); i++)
+            {
+                char c = password.charAt(i);
+
+                if (!sawSpecial && !Character.isLetterOrDigit(c))
+                {
+                    currentScore += 1;
+                    sawSpecial = true;
+                }
+                else
+                {
+                    if (!sawDigit && Character.isDigit(c))
+                    {
+                        currentScore += 1;
+                        sawDigit = true;
+                    }
+                    else
+                    {
+                        if (!sawUpper || !sawLower)
+                        {
+                            if (Character.isUpperCase(c))
+                                sawUpper = true;
+                            else
+                                sawLower = true;
+                            if (sawUpper && sawLower)
+                                currentScore += 1;
+                        }
+                    }
+                }
+            }
+
+            if (password.length() > REQUIRED_LENGTH)
+            {
+                if ((REQUIRE_SPECIAL_CHARACTERS && !sawSpecial) || (REQUIRE_UPPER_CASE && !sawUpper) || (REQUIRE_LOWER_CASE && !sawLower) || (REQUIRE_DIGITS && !sawDigit))
+                {
+                    currentScore = 1;
+                }
+                else
+                {
+                    currentScore = 2;
+                    if (password.length() > MAXIMUM_LENGTH)
+                    {
+                        currentScore = 3;
+                    }
+                }
+            }
+            else
+            {
+                currentScore = 0;
+            }
+
+            switch (currentScore)
+            {
+                case 0:
+                    return WEAK;
+                case 1:
+                    return MEDIUM;
+                case 2:
+                    return STRONG;
+                case 3:
+                    return VERY_STRONG;
+                default:
+            }
+
+            return VERY_STRONG;
+        }
+
     }
 }
