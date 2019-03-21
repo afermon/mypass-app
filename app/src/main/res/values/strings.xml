@@ -110,5 +110,7 @@
     <string name="create_folder_message">Enter the folder name:</string>
     <string name="updated">Updated</string>
     <string name="update_folder_title">Update folder</string>
+    <string name="open_site">Open site</string>
+    <string name="uril_empty">Secret URI is empty</string>
 
 </resources>

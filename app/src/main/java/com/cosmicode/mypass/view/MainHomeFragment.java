@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -234,7 +236,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderNameTexView.setSingleLine();
         folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
         folderNameTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
-        
+
         FrameLayout dialogContainer = new FrameLayout(getActivity());
         FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
@@ -480,6 +482,17 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             return true;
                         case R.id.show_password:
                             Snackbar.make(v, secret.getPasswordDecrypted(folder.getKey()), Snackbar.LENGTH_LONG).show();
+                            return true;
+                        case R.id.open_site:
+                            String url =  secret.getUrl();
+                            if (!url.equals("")){
+                                if (!url.startsWith("http://") && !url.startsWith("https://"))
+                                    url = "http://" + url;
+                                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                                startActivity(browserIntent);
+                            } else {
+                                Snackbar.make(v, getString(R.string.uril_empty), Snackbar.LENGTH_LONG).show();
+                            }
                             return true;
                         case R.id.edit:
                             editSecret(secret,folder);
