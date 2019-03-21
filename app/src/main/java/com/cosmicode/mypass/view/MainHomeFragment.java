@@ -233,7 +233,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         final EditText folderNameTexView = new EditText(getContext());
         folderNameTexView.setSingleLine();
         folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
-
+        folderNameTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
+        
         FrameLayout dialogContainer = new FrameLayout(getActivity());
         FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
@@ -262,6 +263,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderNameTexView.setSingleLine();
         folderNameTexView.setText(folder.getName());
         folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
+        folderNameTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
+
         FrameLayout dialogContainer = new FrameLayout(getActivity());
         FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
