@@ -175,8 +175,14 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderService.getUserFolders(true);
     }
 
+    @SuppressLint("RestrictedApi")
     private void showProgress(boolean show) {
         Long shortAnimTime = (long) getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+        closeFABMenu();
+        createFloatingActionButton.setVisibility(((show) ? View.INVISIBLE : View.VISIBLE));
+        createSecretFloatingActionButton.setVisibility(((show) ? View.INVISIBLE : View.VISIBLE));
+        createFolderFloatingActionButton.setVisibility(((show) ? View.INVISIBLE : View.VISIBLE));
 
         recyclerView.setVisibility(((show) ? View.GONE : View.VISIBLE));
 
