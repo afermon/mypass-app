@@ -38,25 +38,24 @@ public class UserService implements UserInterface {
     private final Handler handler;
     private final boolean keepLogedIn;
     private final SharedPreferences preferences;
+    private final Object userLock = new Object();
     private String authToken = "";
     private MyPassUser mypassUser;
-
-    private final Object userLock = new Object();
     private boolean gettingUser = false;
     private List<OnUserAvailableListener> userListeners = new ArrayList<>();
     private OnLoginStatusListener statusListener;
 
     private Context context;
 
-    public static UserInterface with(Context context, String serverUrl, boolean keepLogedIn, SharedPreferences preferences) {
-        return new UserService(context, keepLogedIn, preferences);
-    }
-
     private UserService(Context context, boolean keepLogedIn, SharedPreferences preferences) {
         this.keepLogedIn = keepLogedIn;
         this.preferences = preferences;
         this.handler = new Handler();
         this.context = context;
+    }
+
+    public static UserInterface with(Context context, String serverUrl, boolean keepLogedIn, SharedPreferences preferences) {
+        return new UserService(context, keepLogedIn, preferences);
     }
 
     @Override
@@ -295,6 +294,11 @@ public class UserService implements UserInterface {
                 userListeners.add(listener);
             }
         }
+    }
+
+    @Override
+    public String getLogedUserLogin() {
+        return mypassUser.getEmail();
     }
 
     @Override

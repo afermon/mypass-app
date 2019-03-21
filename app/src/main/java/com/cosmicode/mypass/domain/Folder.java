@@ -7,12 +7,9 @@ import java.util.List;
 
 public class Folder {
 
-    @SerializedName("icon")
-    @Expose
-    private String icon;
     @SerializedName("id")
     @Expose
-    private Integer id;
+    private Long id;
     @SerializedName("key")
     @Expose
     private String key;
@@ -24,7 +21,7 @@ public class Folder {
     private String name;
     @SerializedName("ownerId")
     @Expose
-    private Integer ownerId;
+    private Long ownerId;
     @SerializedName("ownerLogin")
     @Expose
     private String ownerLogin;
@@ -35,8 +32,7 @@ public class Folder {
     @Expose
     private List<JhiAccount> sharedWiths = null;
 
-    public Folder(String icon, Integer id, String key, String modified, String name, Integer ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
-        this.icon = icon;
+    public Folder(Long id, String key, String modified, String name, Long ownerId, String ownerLogin, List<Secret> secrets, List<JhiAccount> sharedWiths) {
         this.id = id;
         this.key = key;
         this.modified = modified;
@@ -47,19 +43,11 @@ public class Folder {
         this.sharedWiths = sharedWiths;
     }
 
-    public String getIcon() {
-        return icon;
-    }
-
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
-
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -87,11 +75,11 @@ public class Folder {
         this.name = name;
     }
 
-    public Integer getOwnerId() {
+    public Long getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(Integer ownerId) {
+    public void setOwnerId(Long ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -122,8 +110,7 @@ public class Folder {
     @Override
     public String toString() {
         return "Folder{" +
-                "icon='" + icon + '\'' +
-                ", id=" + id +
+                "id=" + id +
                 ", key='" + key + '\'' +
                 ", modified='" + modified + '\'' +
                 ", name='" + name + '\'' +
