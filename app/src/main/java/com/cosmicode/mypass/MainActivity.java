@@ -1,6 +1,8 @@
 package com.cosmicode.mypass;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -22,6 +24,7 @@ import com.cosmicode.mypass.view.MainOptionsFragment;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener {
 
@@ -29,6 +32,8 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
     private static String TAG = "MainActivity";
     @BindView(R.id.navigation_view) BottomNavigationView navigationView;
     @BindView(R.id.navigation_layout) ConstraintLayout navigationLayout;
+
+
 
     public static final Intent clearTopIntent(Context from) {
         Intent intent = new Intent(from, MainActivity.class);
@@ -43,6 +48,7 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
         ButterKnife.bind(this);
         navigationView.setOnNavigationItemSelectedListener(this);
         openFragment(MainHomeFragment.newInstance(), "up");
+
     }
 
     @Override
