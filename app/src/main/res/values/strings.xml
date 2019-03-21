@@ -93,7 +93,7 @@
     <string name="something_wrong">Something went wrong!</string>
     <string name="deleted_msg">Deleted</string>
     <string name="share_title">Who do you want to share the folder with?</string>
-    <string name="share_desc">Please enter the user email. The user must be a MyPass user.</string>
+    <string name="share_desc">Note: The user must be a MyPass user.</string>
     <string name="share_success">Folder shared successfully.</string>
 
     <string name="copyright">All rights reserved. © MyPass 2019</string>
@@ -116,5 +116,8 @@
     <string name="error_uri">Must be a valid url</string>
     <string name="error_username">Username cannot be empty</string>
     <string name="error_pass">Password cannot be empty</string>
+    <string name="shared_with">Shared with:</string>
+    <string name="email">Email</string>
+    <string name="error_email">Should be a valid email address.</string>
 
 </resources>

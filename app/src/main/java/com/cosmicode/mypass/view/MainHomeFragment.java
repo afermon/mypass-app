@@ -6,11 +6,9 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +23,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -86,6 +83,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     private Folder[] folderArray;
     private String[] folderNames;
     private boolean isFABOpen = false;
+    private float density = (float) 1;
 
 
     public MainHomeFragment() {
@@ -109,21 +107,41 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        density = getContext().getResources().getDisplayMetrics().density;
         View view = inflater.inflate(R.layout.fragment_main_home, container, false);
         ButterKnife.bind(this, view);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final float MINIMUM = 40 * density;
+            int scrollDist = 0;
+            boolean isVisible = true;
+
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE)
-                    createFloatingActionButton.show();
                 super.onScrollStateChanged(recyclerView, newState);
-
             }
 
+            @SuppressLint("RestrictedApi")
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                if (dy > 0 || dy < 0 && createFloatingActionButton.isShown())
-                    createFloatingActionButton.hide();
+                if (isVisible && scrollDist > MINIMUM) {
+                    closeFABMenu();
+                    createFloatingActionButton.setVisibility(View.INVISIBLE);
+                    createFolderFloatingActionButton.setVisibility(View.INVISIBLE);
+                    createSecretFloatingActionButton.setVisibility(View.INVISIBLE);
+                    scrollDist = 0;
+                    isVisible = false;
+                }
+                else if (!isVisible && scrollDist < -MINIMUM) {
+                    createFloatingActionButton.setVisibility(View.VISIBLE);
+                    createSecretFloatingActionButton.setVisibility(View.VISIBLE);
+                    createFolderFloatingActionButton.setVisibility(View.VISIBLE);
+                    scrollDist = 0;
+                    isVisible = true;
+                }
+
+                if ((isVisible && dy > 0) || (!isVisible && dy < 0)) {
+                    scrollDist += dy;
+                }
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
@@ -147,11 +165,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderService.getUserFolders(true);
 
         createFloatingActionButton.setOnClickListener(v -> {
-            if(!isFABOpen){
-                showFABMenu();
-            }else{
-                closeFABMenu();
-            }
+            if(!isFABOpen)showFABMenu();
+            else closeFABMenu();
         });
     }
 
@@ -305,24 +320,17 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     public void createFolder() {
         closeFABMenu();
         AlertDialog.Builder createFolderDialogBuilder = new AlertDialog.Builder(getContext());
-        final EditText folderNameTexView = new EditText(getContext());
-        folderNameTexView.setSingleLine();
-        folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
-        folderNameTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
 
-        FrameLayout dialogContainer = new FrameLayout(getActivity());
-        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-        folderNameTexView.setLayoutParams(params);
-        dialogContainer.addView(folderNameTexView);
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View folderFormLayout = inflater.inflate(R.layout.folder_form, null);
+
+        final EditText folderNameTexView = folderFormLayout.findViewById(R.id.edit_name);
 
         AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
         mAwesomeValidation.addValidation(folderNameTexView, "[a-zA-Z\\s]+", getString(R.string.error_name));
 
         createFolderDialogBuilder.setTitle(R.string.create_folder_title)
-        .setMessage(getString(R.string.create_folder_message))
-        .setView(dialogContainer)
+        .setView(folderFormLayout)
         .setPositiveButton(R.string.create, (dialog, which) -> { })
         .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
 
@@ -343,25 +351,19 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
     private void editFolder(Folder folder) {
         AlertDialog.Builder editFolderDialogBuilder = new AlertDialog.Builder(getContext());
-        final EditText folderNameTexView = new EditText(getContext());
-        folderNameTexView.setSingleLine();
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View folderFormLayout = inflater.inflate(R.layout.folder_form, null);
+
+        final EditText folderNameTexView = folderFormLayout.findViewById(R.id.edit_name);
+
         folderNameTexView.setText(folder.getName());
-        folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
-        folderNameTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
 
         AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
         mAwesomeValidation.addValidation(folderNameTexView, "[a-zA-Z\\s]+", getString(R.string.error_name));
 
-        FrameLayout dialogContainer = new FrameLayout(getActivity());
-        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
-        folderNameTexView.setLayoutParams(params);
-        dialogContainer.addView(folderNameTexView);
-
         editFolderDialogBuilder.setTitle(R.string.update_folder_title)
-                .setMessage(getString(R.string.create_folder_message))
-                .setView(dialogContainer)
+                .setView(folderFormLayout)
                 .setPositiveButton(R.string.update, (dialog, which) -> { })
                 .setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
 
@@ -458,20 +460,31 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     }
 
     private void shareFolder(Folder folder) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.share_title);
-        builder.setMessage(R.string.share_desc);
-        final EditText emailTexView = new EditText(getContext());
+        AlertDialog.Builder shareDialogBuilder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
 
-        emailTexView.setSingleLine();
-        emailTexView.setText(folder.getName());
-        emailTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_mail_black,0,0,0);
-        emailTexView.setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.dialog_margin));
-        emailTexView.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        builder.setView(emailTexView);
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> folderService.shareFolder(folder, emailTexView.getText().toString()));
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
-        builder.show();
+        View shareFormLayout = inflater.inflate(R.layout.share_form, null);
+
+        final EditText emailTexView = shareFormLayout.findViewById(R.id.share_email);
+
+        shareDialogBuilder.setTitle(R.string.share_title);
+
+        AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
+        mAwesomeValidation.addValidation(emailTexView, Patterns.EMAIL_ADDRESS, getString(R.string.error_email));
+
+        shareDialogBuilder.setView(shareFormLayout);
+        shareDialogBuilder.setPositiveButton(R.string.share, (dialog, which) -> { });
+        shareDialogBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+        AlertDialog shareDialog = shareDialogBuilder.create();
+
+        shareDialog.show();
+
+        shareDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if(mAwesomeValidation.validate()) {
+                folderService.shareFolder(folder, emailTexView.getText().toString());
+                shareDialog.dismiss();
+            }
+        });
     }
 
 
