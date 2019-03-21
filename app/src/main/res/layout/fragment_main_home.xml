@@ -81,13 +81,42 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/create_folder_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:layout_marginTop="8dp"
+        android:src="@drawable/icon_folder_white"
+        android:visibility="visible"
+        app:backgroundTint="@color/indigo"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="@+id/create_fab"
+        app:layout_constraintStart_toStartOf="@+id/create_fab"
+        app:layout_constraintTop_toTopOf="@+id/create_fab" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/create_secret_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:src="@drawable/icon_key_white"
+        android:visibility="visible"
+        app:backgroundTint="@color/indigo"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="@+id/create_fab"
+        app:layout_constraintStart_toStartOf="@+id/create_fab"
+        app:layout_constraintTop_toTopOf="@+id/create_fab"
+        tools:layout_editor_absoluteY="627dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/create_fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/icon_add_white"
         app:backgroundTint="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"

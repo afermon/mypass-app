@@ -53,7 +53,7 @@ public class FolderService {
 
     public void createFolder(Folder folder) {
 
-        folder.setKey(EncryptionHelper.generateRandomString()); // Generate encryption key for the folder secrets
+        folder.setKey(EncryptionHelper.generateRandomString(0)); // Generate encryption key for the folder secrets
 
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
