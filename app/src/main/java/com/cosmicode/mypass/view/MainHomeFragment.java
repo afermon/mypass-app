@@ -9,9 +9,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
@@ -21,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -34,6 +40,7 @@ import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
 import com.cosmicode.mypass.service.FolderService;
 import com.cosmicode.mypass.service.SecretService;
+import com.cosmicode.mypass.util.EncryptionHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -50,6 +57,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionParameters;
 import io.github.luizgrp.sectionedrecyclerviewadapter.SectionedRecyclerViewAdapter;
 import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
@@ -65,6 +73,10 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     ProgressBar progressBar;
     @BindView(R.id.create_fab)
     FloatingActionButton createFloatingActionButton;
+    @BindView(R.id.create_folder_fab)
+    FloatingActionButton createFolderFloatingActionButton;
+    @BindView(R.id.create_secret_fab)
+    FloatingActionButton createSecretFloatingActionButton;
     @BindView(R.id.no_resources)
     ConstraintLayout noResourcesMessage;
     private SectionedRecyclerViewAdapter sectionAdapter;
@@ -73,6 +85,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     private List<Folder> folderList;
     private Folder[] folderArray;
     private String[] folderNames;
+    private boolean isFABOpen = false;
 
 
     public MainHomeFragment() {
@@ -134,22 +147,11 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderService.getUserFolders(true);
 
         createFloatingActionButton.setOnClickListener(v -> {
-            String[] listItems = new String[]{getString(R.string.folder), getString(R.string.secret)};
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-            mBuilder.setTitle(R.string.create_prompt);
-            mBuilder.setIcon(R.drawable.icon);
-            mBuilder.setSingleChoiceItems(listItems, -1, (dialog, which) -> {
-                //If is 0 is a Folder, if is 1 is a password
-                if (which == 0) createFolder();
-                else createSecret();
-
-                dialog.dismiss();
-            });
-
-            mBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
-
-            AlertDialog mDialog = mBuilder.create();
-            mDialog.show();
+            if(!isFABOpen){
+                showFABMenu();
+            }else{
+                closeFABMenu();
+            }
         });
     }
 
@@ -185,7 +187,33 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 });
     }
 
-    private void createSecret() {
+    private void showFABMenu(){
+        isFABOpen=true;
+        createFloatingActionButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.light));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            createFloatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.icon_close_white, getContext().getTheme()));
+        } else {
+            createFloatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.icon_close_white));
+        }
+        createFolderFloatingActionButton.animate().translationY(-getResources().getDimension(R.dimen.standard_55));
+        createSecretFloatingActionButton.animate().translationY(-getResources().getDimension(R.dimen.standard_105));
+    }
+
+    private void closeFABMenu(){
+        isFABOpen=false;
+        createFloatingActionButton.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.colorPrimary));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            createFloatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_white, getContext().getTheme()));
+        } else {
+            createFloatingActionButton.setImageDrawable(getResources().getDrawable(R.drawable.icon_add_white));
+        }
+        createFolderFloatingActionButton.animate().translationY(0);
+        createSecretFloatingActionButton.animate().translationY(0);
+    }
+
+    @OnClick(R.id.create_secret_fab)
+    public void createSecret() {
+        closeFABMenu();
         AlertDialog.Builder selectFolderDialogBuilder = new AlertDialog.Builder(getContext());
         selectFolderDialogBuilder.setTitle(R.string.select_folder);
         selectFolderDialogBuilder.setIcon(R.drawable.icon);
@@ -213,6 +241,35 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             TextView folderNameTextView = secretFormLayout.findViewById(R.id.folder_name);
             folderNameTextView.setText(selectFolder.getName());
             EditText editTextPassword = secretFormLayout.findViewById(R.id.edit_password);
+            ProgressBar passwordStrength = secretFormLayout.findViewById(R.id.password_strenght);
+            ImageButton generatePasswordButton = secretFormLayout.findViewById(R.id.generate_password);
+
+            generatePasswordButton.setOnClickListener(v -> editTextPassword.setText(EncryptionHelper.generateRandomString(12)));
+
+            editTextPassword.addTextChangedListener(new TextWatcher() {
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                }
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    if(s.length() == 0) {
+                        passwordStrength.setProgress(0);
+                        passwordStrength.getProgressDrawable().setColorFilter(null);
+                    } else{
+                        PasswordStrength validationResult = PasswordStrength.calculateStrength(s.toString());
+                        passwordStrength.setProgress(validationResult.getValue());
+                        passwordStrength.getProgressDrawable().setColorFilter(validationResult.getColor(), PorterDuff.Mode.SRC_IN);
+                        editTextPassword.setTextColor(validationResult.getColor());
+                    }
+                }
+
+                @Override
+                public void afterTextChanged(Editable s) {
+
+                }
+            });
 
             AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
             mAwesomeValidation.addValidation(editTextName, "[a-zA-Z\\s]+", getString(R.string.error_name));
@@ -244,7 +301,9 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 .create().show();
     }
 
-    private void createFolder() {
+    @OnClick(R.id.create_folder_fab)
+    public void createFolder() {
+        closeFABMenu();
         AlertDialog.Builder createFolderDialogBuilder = new AlertDialog.Builder(getContext());
         final EditText folderNameTexView = new EditText(getContext());
         folderNameTexView.setSingleLine();
@@ -334,6 +393,39 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         EditText editTextPassword = secretFormView.findViewById(R.id.edit_password);
         EditText editTextUsername = secretFormView.findViewById(R.id.edit_username);
         TextView folderNameTextView = secretFormView.findViewById(R.id.folder_name);
+        ProgressBar passwordStrength = secretFormView.findViewById(R.id.password_strenght);
+        ImageButton generatePasswordButton = secretFormView.findViewById(R.id.generate_password);
+
+        PasswordStrength initialValidationResult = PasswordStrength.calculateStrength(secret.getPasswordDecrypted(folder.getKey()));
+        passwordStrength.setProgress(initialValidationResult.getValue());
+        passwordStrength.getProgressDrawable().setColorFilter(initialValidationResult.getColor(), PorterDuff.Mode.SRC_IN);
+
+        generatePasswordButton.setOnClickListener(v -> editTextPassword.setText(EncryptionHelper.generateRandomString(12)));
+
+        editTextPassword.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(s.length() == 0) {
+                    passwordStrength.setProgress(0);
+                    passwordStrength.getProgressDrawable().setColorFilter(null);
+                } else{
+                    PasswordStrength validationResult = PasswordStrength.calculateStrength(s.toString());
+                    passwordStrength.setProgress(validationResult.getValue());
+                    passwordStrength.getProgressDrawable().setColorFilter(validationResult.getColor(), PorterDuff.Mode.SRC_IN);
+                    editTextPassword.setTextColor(validationResult.getColor());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
         AwesomeValidation mAwesomeValidation = new AwesomeValidation(BASIC);
         mAwesomeValidation.addValidation(editTextName, "[a-zA-Z\\s]+", getString(R.string.error_name));
@@ -646,11 +738,11 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     public enum PasswordStrength
     {
 
-        WEAK(0, Color.RED), MEDIUM(1, Color.argb(255, 220, 185, 0)), STRONG(2, Color.GREEN), VERY_STRONG(3, Color.BLUE);
+        WEAK(0, Color.parseColor("#f5365c")), MEDIUM(1, Color.parseColor("#ffd600")), STRONG(2, Color.parseColor("#2dce89")), VERY_STRONG(3, Color.parseColor("#5603AD"));
 
         //--------REQUIREMENTS--------
         static int REQUIRED_LENGTH = 6;
-        static int MAXIMUM_LENGTH = 6;
+        static int MAXIMUM_LENGTH = 12;
         static boolean REQUIRE_SPECIAL_CHARACTERS = true;
         static boolean REQUIRE_DIGITS = true;
         static boolean REQUIRE_LOWER_CASE = true;

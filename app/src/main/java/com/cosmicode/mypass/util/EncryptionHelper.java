@@ -115,11 +115,12 @@ public class EncryptionHelper {
         return source;
     }
 
-    public static String generateRandomString() {
+    public static String generateRandomString(int lenght) {
+        if(lenght == 0) lenght = KEY_LENGTH;
         String SALTCHARS = "abcdefghijklmnopqrstuvwxyz1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
-        while (salt.length() < KEY_LENGTH) {
+        while (salt.length() < lenght) {
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index));
         }
