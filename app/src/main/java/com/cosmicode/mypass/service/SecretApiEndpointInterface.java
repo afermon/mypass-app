@@ -1,6 +1,5 @@
 package com.cosmicode.mypass.service;
 
-import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
 
 import java.util.List;

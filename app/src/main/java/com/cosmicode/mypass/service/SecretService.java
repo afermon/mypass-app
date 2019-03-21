@@ -2,7 +2,6 @@ package com.cosmicode.mypass.service;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.domain.Secret;
@@ -27,7 +26,7 @@ public class SecretService {
         this.authToken = ((BaseActivity) this.context).getJhiUsers().getAuthToken();
     }
 
-    public void getUserScrets(){
+    public void getUserScrets() {
         SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
 
         Call<List<Secret>> call = apiService.getUserSecrets();
@@ -52,9 +51,9 @@ public class SecretService {
 
     }
 
-    public void createSecret(Secret secret, String folderKey){
+    public void createSecret(Secret secret, String folderKey) {
 
-        if(secret.getNewPassword() != null){
+        if (secret.getNewPassword() != null) {
             try {
                 secret.setPassword(EncryptionHelper.encrypt(folderKey, secret.getNewPassword()));
             } catch (Exception e) {
@@ -85,9 +84,9 @@ public class SecretService {
         });
     }
 
-    public void updateSecret(String folderKey, Secret secret){
+    public void updateSecret(String folderKey, Secret secret) {
 
-        if(secret.getNewPassword() != null){
+        if (secret.getNewPassword() != null && !secret.getNewPassword().equals("")) {
             try {
                 secret.setPassword(EncryptionHelper.encrypt(folderKey, secret.getNewPassword()));
             } catch (Exception e) {
@@ -102,7 +101,7 @@ public class SecretService {
         call.enqueue(new Callback<Secret>() {
             @Override
             public void onResponse(Call<Secret> call, Response<Secret> response) {
-                if (response.code() == 201) { // OK
+                if (response.code() == 200) { // OK
                     listener.OnUpdateSecretSuccess(response.body());
                 } else {
                     Log.e(TAG, response.toString());
@@ -118,7 +117,7 @@ public class SecretService {
         });
     }
 
-    public void deleteSecret(Secret secret){
+    public void deleteSecret(Secret secret) {
         SecretApiEndpointInterface apiService = ApiServiceGenerator.createService(SecretApiEndpointInterface.class, authToken);
 
         Call<Void> call = apiService.deleteSecret(secret.getId());
@@ -143,10 +142,14 @@ public class SecretService {
     }
 
     public interface SecretServiceListener {
-        void OnGetSecretsSuccess(List<Secret> notifications);
+        void OnGetSecretsSuccess(List<Secret> secrets);
+
         void OnCreateSecretSuccess(Secret secret);
+
         void OnUpdateSecretSuccess(Secret secret);
+
         void OnDeleteSecretSuccess(Long id);
+
         void OnSecretActionError(String error);
     }
 

@@ -60,7 +60,9 @@ public class FingerprintHandler extends FingerprintManager.AuthenticationCallbac
     //so to provide the user with as much feedback as possible I’m incorporating this information into my toast//
     public void onAuthenticationHelp(int helpMsgId, CharSequence helpString) {
         Toast.makeText(context, "Authentication help\n" + helpString, Toast.LENGTH_LONG).show();
-    }@Override
+    }
+
+    @Override
 
     //onAuthenticationSucceeded is called when a fingerprint has been successfully matched to one of the fingerprints stored on the user’s device//
     public void onAuthenticationSucceeded(

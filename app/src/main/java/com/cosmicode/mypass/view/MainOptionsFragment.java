@@ -2,10 +2,6 @@ package com.cosmicode.mypass.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +10,10 @@ import android.widget.TextView;
 import com.cosmicode.mypass.BaseActivity;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.MyPassUser;
+
+import androidx.fragment.app.Fragment;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MainOptionsFragment extends Fragment {
 
@@ -43,7 +43,7 @@ public class MainOptionsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        ((BaseActivity)getActivity()).getJhiUsers().getLogedUser(user -> updateUserInfo(user));
+        ((BaseActivity) getActivity()).getJhiUsers().getLogedUser(user -> updateUserInfo(user));
     }
 
     @Override
@@ -64,7 +64,7 @@ public class MainOptionsFragment extends Fragment {
     }
 
     @OnClick(R.id.logout_button)
-    public void logout (View view){
+    public void logout(View view) {
         if (mListener != null) {
             mListener.performLogout();
         }

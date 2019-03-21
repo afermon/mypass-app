@@ -1,10 +1,11 @@
 package com.cosmicode.mypass;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.cosmicode.mypass.service.UserInterface;
 import com.cosmicode.mypass.util.Core;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
 

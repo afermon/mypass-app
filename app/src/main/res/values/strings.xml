@@ -97,5 +97,20 @@
     <string name="share_success">Folder shared successfully.</string>
 
     <string name="copyright">All rights reserved. © MyPass 2019</string>
+    <string name="password_edit_title">Edit Password information</string>
+    <string name="update">Update</string>
+    <string name="edit_folder_tittle">Edit the name of the folder</string>
+    <string name="folder">Folder</string>
+    <string name="secret">Secret</string>
+    <string name="create_prompt">What would you like to create?</string>
+    <string name="select_folder">Select the parent folder:</string>
+    <string name="secret_create_title">New secret</string>
+    <string name="create">Create</string>
+    <string name="create_folder_title">Create folder</string>
+    <string name="create_folder_message">Enter the folder name:</string>
+    <string name="updated">Updated</string>
+    <string name="update_folder_title">Update folder</string>
+    <string name="open_site">Open site</string>
+    <string name="uril_empty">Secret URI is empty</string>
 
 </resources>

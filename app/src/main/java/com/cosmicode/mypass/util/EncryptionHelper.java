@@ -15,9 +15,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class EncryptionHelper {
     private final static String TAG = "EncryptionHelper";
-    private static char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
     private final static int KEY_LENGTH = 24;
     private final static String iv = "sj228ccsoujvxxzx";
+    private static char[] HEX_CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
 
     public static String encrypt(String secretKey, String text) throws Exception {
         Log.d(TAG, "encrypt: " + text + " with key " + secretKey);
