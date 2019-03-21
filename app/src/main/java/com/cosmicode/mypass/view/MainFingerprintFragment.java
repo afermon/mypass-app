@@ -8,12 +8,6 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-
 import android.os.CancellationSignal;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyPermanentlyInvalidatedException;
@@ -42,19 +36,23 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static android.content.Context.FINGERPRINT_SERVICE;
 import static android.content.Context.KEYGUARD_SERVICE;
 
 public class MainFingerprintFragment extends Fragment {
 
-    private CallbackManager callbackManager;
-
     private static final String KEY_NAME = "mypass";
+    @BindView(R.id.fingerprint_feedback)
+    TextView textView;
+    private CallbackManager callbackManager;
     private Cipher cipher;
     private KeyStore keyStore;
     private KeyGenerator keyGenerator;
-    @BindView(R.id.fingerprint_feedback)
-    TextView textView;
     private FingerprintManager.CryptoObject cryptoObject;
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
@@ -183,16 +181,17 @@ public class MainFingerprintFragment extends Fragment {
         }
     }
 
+    public interface OnFingerprintListener {
+        void onFingerprintSuccess(String string);
+
+        void onFingerprintError(String error);
+    }
+
     private class FingerprintException extends Exception {
 
         public FingerprintException(Exception e) {
             super(e);
         }
-    }
-
-    public interface OnFingerprintListener {
-        void onFingerprintSuccess(String string);
-        void onFingerprintError(String error);
     }
 
     @TargetApi(Build.VERSION_CODES.M)
@@ -251,8 +250,8 @@ public class MainFingerprintFragment extends Fragment {
         //onAuthenticationSucceeded is called when a fingerprint has been successfully matched to one of the fingerprints stored on the user’s device//
         public void onAuthenticationSucceeded(
                 FingerprintManager.AuthenticationResult result) {
-            if(mListener != null)
-                mListener.onFingerprintSuccess("Success!" );
+            if (mListener != null)
+                mListener.onFingerprintSuccess("Success!");
         }
     }
 }

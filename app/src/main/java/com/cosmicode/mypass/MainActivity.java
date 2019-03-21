@@ -1,12 +1,18 @@
 package com.cosmicode.mypass;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.MenuItem;
+import android.view.View;
 
 import com.cosmicode.mypass.view.MainFingerprintFragment;
+import com.cosmicode.mypass.view.MainHomeFragment;
+import com.cosmicode.mypass.view.MainOptionsFragment;
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,24 +21,14 @@ import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.cosmicode.mypass.view.MainHomeFragment;
-import com.cosmicode.mypass.view.MainOptionsFragment;
-import com.facebook.login.LoginManager;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainHomeFragment.OnFragmentInteractionListener, MainOptionsFragment.OnFragmentInteractionListener {
+public class MainActivity extends BaseActivity implements MainFingerprintFragment.OnFingerprintListener, BottomNavigationView.OnNavigationItemSelectedListener, MainOptionsFragment.OnFragmentInteractionListener {
 
     // Variables
     private static String TAG = "MainActivity";
-    @BindView(R.id.navigation_view) BottomNavigationView navigationView;
-    @BindView(R.id.navigation_layout) ConstraintLayout navigationLayout;
-
+    @BindView(R.id.navigation_view)
+    BottomNavigationView navigationView;
+    @BindView(R.id.navigation_layout)
+    ConstraintLayout navigationLayout;
 
 
     public static final Intent clearTopIntent(Context from) {
@@ -52,7 +48,7 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         challengeUser(true);
     }
@@ -109,12 +105,8 @@ public class MainActivity extends BaseActivity implements MainFingerprintFragmen
         startActivity(LoginActivity.clearTopIntent(this));
     }
 
-    public BaseActivity getBaseActivity() {
-        return this;
-    }
-
-    private void challengeUser(Boolean show){
-        if(show){
+    private void challengeUser(Boolean show) {
+        if (show) {
             navigationLayout.setVisibility(View.INVISIBLE);
             openFragment(MainFingerprintFragment.newInstance(), "up");
         } else {

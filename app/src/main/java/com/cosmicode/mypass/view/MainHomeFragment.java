@@ -6,7 +6,6 @@ import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -15,16 +14,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cosmicode.mypass.BaseActivity;
-import com.cosmicode.mypass.MainActivity;
 import com.cosmicode.mypass.R;
 import com.cosmicode.mypass.domain.Folder;
 import com.cosmicode.mypass.domain.Secret;
@@ -33,7 +30,6 @@ import com.cosmicode.mypass.service.SecretService;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.lang.reflect.Array;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -53,10 +49,7 @@ import io.github.luizgrp.sectionedrecyclerviewadapter.StatelessSection;
 
 public class MainHomeFragment extends Fragment implements FolderService.FolderServiceListener, SecretService.SecretServiceListener {
 
-    private OnFragmentInteractionListener mListener;
-    private SectionedRecyclerViewAdapter sectionAdapter;
     private final static String TAG = "MainHomeFragment";
-
     @BindView(R.id.secrets_list)
     RecyclerView recyclerView;
     @BindView(R.id.progress_bar)
@@ -65,16 +58,12 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     FloatingActionButton createFloatingActionButton;
     @BindView(R.id.no_resources)
     ConstraintLayout noResourcesMessage;
-
-
+    private SectionedRecyclerViewAdapter sectionAdapter;
     private FolderService folderService;
     private SecretService secretService;
-
     private List<Folder> folderList;
-    private  Folder[] folderArray;
+    private Folder[] folderArray;
     private String[] folderNames;
-    //options
-    String[] listItems;
 
 
     public MainHomeFragment() {
@@ -94,6 +83,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         folderService = new FolderService(getContext(), this);
         secretService = new SecretService(getContext(), this);
     }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -122,18 +112,11 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFingerprintListener");
-        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        mListener = null;
     }
 
     @Override
@@ -141,178 +124,29 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
         showProgress(true);
         folderService.getUserFolders(true);
 
+        createFloatingActionButton.setOnClickListener(v -> {
+            String[] listItems = new String[]{getString(R.string.folder), getString(R.string.secret)};
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
+            mBuilder.setTitle(R.string.create_prompt);
+            mBuilder.setIcon(R.drawable.icon);
+            mBuilder.setSingleChoiceItems(listItems, -1, (dialog, which) -> {
+                //If is 0 is a Folder, if is 1 is a password
+                if (which == 0) createFolder();
+                else createSecret();
 
-            createFloatingActionButton.setOnClickListener(v -> {
-                listItems = new String[]{"Folder","Password"};
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(getContext());
-                mBuilder.setTitle("What do you want to create?");
-                mBuilder.setIcon(R.drawable.icon);
-                mBuilder.setSingleChoiceItems(listItems, -1, (dialog, which) -> {
-
-                    //If is 0 is a Folder, if is 1 is a password
-                    if(which == 0){
-                        dialog.dismiss();
-                        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
-                        ab.setTitle("Enter the name of the folder");
-                        final EditText folderText = new EditText(getContext());
-                        ab.setView(folderText);
-                        ab.setPositiveButton("Create", (dialog1, which1) -> {
-                            String folderName = folderText.getText().toString();
-                            Folder newFolder = new Folder(null,null,null,folderName,null,null,null,null);
-                            folderService.createFolder(newFolder);
-                            dialog1.dismiss();
-                        });
-
-                        ab.setNegativeButton("Cancel", (dialog16, which16) -> dialog16.dismiss());
-
-                        AlertDialog a = ab.create();
-                        a.show();
-                    }else{
-
-                        dialog.dismiss();
-
-                        AlertDialog.Builder sBuilder = new AlertDialog.Builder(getContext());
-                        sBuilder.setTitle("Choose a folder");
-                        sBuilder.setIcon(R.drawable.icon);
-                        folderArray = new Folder[folderList.size()];
-                        folderArray = folderList.toArray(folderArray);
-                        extractFolderName();
-
-                        sBuilder.setSingleChoiceItems(folderNames, -1, (dialog14, which14) -> {
-                            dialog14.dismiss();
-                            //get chosen folder
-                            Folder selectFolder = folderList.get(which14);
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-
-                            LayoutInflater inflater = getActivity().getLayoutInflater();
-                            View view1 = inflater.inflate(R.layout.pass_form, null);
-
-                            builder.setView(view1)
-                                    .setTitle("Fill with Password information")
-                                    .setNegativeButton("Cancel", (dialog15, which15) -> dialog15.dismiss());
-
-
-                                    EditText editTextName = view1.findViewById(R.id.edit_name);
-                                    EditText editTextUrl = view1.findViewById(R.id.edit_url);
-                                    EditText editTextDescription = view1.findViewById(R.id.edit_description);
-                                    EditText editTextPassword = view1.findViewById(R.id.edit_password);
-                                    EditText editTextUsername = view1.findViewById(R.id.edit_username);
-
-                                    builder.setPositiveButton("Create", (dialog12, which12) -> {
-                                        dialog12.dismiss();
-                                        String passName = editTextName.getText().toString();
-                                        String passUrl = editTextUrl.getText().toString();
-                                        String passDescription = editTextDescription.getText().toString();
-                                        String password = editTextPassword.getText().toString();
-                                        String username = editTextUsername.getText().toString();
-
-                                        //Create secret object
-                                        Secret newSecret = new Secret(selectFolder.getId(),passName,passDescription,selectFolder.getOwnerId(),passUrl,username,password);
-                                        secretService.createSecret(newSecret, selectFolder.getKey());
-                                    });
-
-                            AlertDialog formDialog = builder.create();
-                            formDialog.show();
-                        });
-                        sBuilder.setNegativeButton("Cancel", (dialog13, which13) -> dialog13.dismiss());
-
-                        AlertDialog sDialog = sBuilder.create();
-                        sDialog.show();
-
-                    }
-                });
-
-                mBuilder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
-
-                AlertDialog mDialog = mBuilder.create();
-                mDialog.show();
+                dialog.dismiss();
             });
 
+            mBuilder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
 
-
-
-
+            AlertDialog mDialog = mBuilder.create();
+            mDialog.show();
+        });
     }
 
-    @Override
-    public void OnGetFoldersSuccess(List<Folder> folders) {
-        folderList = folders;
-        Log.d(TAG, folders.toString());
-
-        sectionAdapter = new SectionedRecyclerViewAdapter();
-
-        if (folderList.size() > 0) {
-            noResourcesMessage.setVisibility(View.INVISIBLE);
-            for (Folder folder : folderList) {
-                sectionAdapter.addSection(new FolderSection(folder));
-            }
-
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.setAdapter(sectionAdapter);
-
-        } else
-            noResourcesMessage.setVisibility(View.VISIBLE);
-
-        showProgress(false);
-    }
-
-    @Override
-    public void OnCreateFolderSuccess(Folder folder) {
-        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
-        updateFolderSecretList();
-    }
-
-    @Override
-    public void OnUpdateFolderSuccess(Folder folder) {
-        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
-        updateFolderSecretList();
-    }
-
-    @Override
-    public void OnDeleteFolderSuccess(Long id) {
-        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
-        updateFolderSecretList();
-    }
-
-    @Override
-    public void OnShareFolderSuccess(Folder folder) {
-        Toast.makeText(getContext(), R.string.share_success, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void OnFolderActionError(String error) {
-        Toast.makeText(getContext(), getString(R.string.something_wrong)+ " " + error, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public void OnGetSecretsSuccess(List<Secret> notifications) {
-
-    }
-
-    @Override
-    public void OnCreateSecretSuccess(Secret secret) {
-        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
-        updateFolderSecretList();
-    }
-
-    @Override
-    public void OnUpdateSecretSuccess(Secret secret) {
-
-    }
-
-    @Override
-    public void OnDeleteSecretSuccess(Long id) {
-        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
-        updateFolderSecretList();
-    }
-
-    @Override
-    public void OnSecretActionError(String error) {
-        Toast.makeText(getContext(), getString(R.string.something_wrong)+ " " + error, Toast.LENGTH_LONG).show();
-    }
-
-    public interface OnFragmentInteractionListener {
-        BaseActivity getBaseActivity();
+    private void refreshFolderSecretList() {
+        showProgress(true);
+        folderService.getUserFolders(true);
     }
 
     private void showProgress(boolean show) {
@@ -340,6 +174,246 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                         progressBar.setVisibility(((show) ? View.VISIBLE : View.GONE));
                     }
                 });
+    }
+
+    private void createSecret() {
+        AlertDialog.Builder sBuilder = new AlertDialog.Builder(getContext());
+        sBuilder.setTitle(R.string.select_folder);
+        sBuilder.setIcon(R.drawable.icon);
+        folderArray = new Folder[folderList.size()];
+        folderArray = folderList.toArray(folderArray);
+        extractFolderName();
+
+        sBuilder.setSingleChoiceItems(folderNames, -1, (dialog14, which14) -> {
+            dialog14.dismiss();
+            //get chosen folder
+            Folder selectFolder = folderList.get(which14);
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View secretFormLayout = inflater.inflate(R.layout.secret_form, null);
+
+            builder.setView(secretFormLayout)
+                    .setTitle(getString(R.string.secret_create_title))
+                    .setNegativeButton(R.string.cancel, (dialog15, which15) -> dialog15.dismiss());
+
+            EditText editTextName = secretFormLayout.findViewById(R.id.edit_name);
+            EditText editTextUrl = secretFormLayout.findViewById(R.id.edit_url);
+            EditText editTextDescription = secretFormLayout.findViewById(R.id.edit_description);
+            EditText editTextPassword = secretFormLayout.findViewById(R.id.edit_password);
+            EditText editTextUsername = secretFormLayout.findViewById(R.id.edit_username);
+            TextView folderNameTextView = secretFormLayout.findViewById(R.id.folder_name);
+            folderNameTextView.setText(selectFolder.getName());
+
+            builder.setPositiveButton(R.string.create, (dialog12, which12) -> {
+                dialog12.dismiss();
+
+                Secret secret = new Secret();
+                secret.setFolderId(selectFolder.getId());
+                secret.setName(editTextName.getText().toString());
+                secret.setNotes(editTextDescription.getText().toString());
+                secret.setUrl(editTextUrl.getText().toString());
+                secret.setUsername(editTextUsername.getText().toString());
+                String password = editTextPassword.getText().toString();
+                if (!password.equals("")) secret.setNewPassword(password);
+                secretService.createSecret(secret, selectFolder.getKey());
+            });
+
+            AlertDialog formDialog = builder.create();
+            formDialog.show();
+        });
+        sBuilder.setNegativeButton(R.string.cancel, (dialog13, which13) -> dialog13.dismiss());
+
+        AlertDialog sDialog = sBuilder.create();
+        sDialog.show();
+    }
+
+    private void createFolder() {
+        AlertDialog.Builder createFolderDialogBuilder = new AlertDialog.Builder(getContext());
+        final EditText folderNameTexView = new EditText(getContext());
+        folderNameTexView.setSingleLine();
+        folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
+
+        FrameLayout dialogContainer = new FrameLayout(getActivity());
+        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        folderNameTexView.setLayoutParams(params);
+        dialogContainer.addView(folderNameTexView);
+
+        createFolderDialogBuilder.setTitle(R.string.create_folder_title)
+        .setMessage(getString(R.string.create_folder_message))
+        .setView(dialogContainer)
+        .setPositiveButton(R.string.create, (dialog1, which1) -> {
+            String folderName = folderNameTexView.getText().toString();
+            Folder newFolder = new Folder(null, null, null, folderName, null, null, null, null);
+            folderService.createFolder(newFolder);
+            showProgress(true);
+            dialog1.dismiss();
+        })
+        .setNegativeButton(R.string.cancel, (dialog16, which16) -> dialog16.dismiss());
+
+        createFolderDialogBuilder.create().show();
+    }
+
+    private void editFolder(Folder folder) {
+        AlertDialog.Builder editFolderDialogBuilder = new AlertDialog.Builder(getContext());
+        final EditText folderNameTexView = new EditText(getContext());
+        folderNameTexView.setSingleLine();
+        folderNameTexView.setText(folder.getName());
+        folderNameTexView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.icon_folder_gray,0,0,0);
+        FrameLayout dialogContainer = new FrameLayout(getActivity());
+        FrameLayout.LayoutParams params = new  FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.dialog_margin);
+        folderNameTexView.setLayoutParams(params);
+        dialogContainer.addView(folderNameTexView);
+
+        editFolderDialogBuilder.setTitle(R.string.update_folder_title)
+                .setMessage(getString(R.string.create_folder_message))
+                .setView(dialogContainer)
+                .setPositiveButton(R.string.update, (dialog1, which1) -> {
+                    folder.setName(folderNameTexView.getText().toString());
+                    folderService.updateFolder(folder);
+                    showProgress(true);
+                    dialog1.dismiss();
+                })
+                .setNegativeButton(R.string.cancel, (dialog16, which16) -> dialog16.dismiss());
+
+        editFolderDialogBuilder.create().show();
+    }
+
+    private void editSecret(Secret secret, Folder folder) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View secretFormView = inflater.inflate(R.layout.secret_form, null);
+        builder.setView(secretFormView)
+                .setTitle(getString(R.string.password_edit_title))
+                .setNegativeButton(R.string.cancel, (dialog15, which15) -> dialog15.dismiss());
+
+        EditText editTextName = secretFormView.findViewById(R.id.edit_name);
+        EditText editTextUrl = secretFormView.findViewById(R.id.edit_url);
+        EditText editTextDescription = secretFormView.findViewById(R.id.edit_description);
+        EditText editTextPassword = secretFormView.findViewById(R.id.edit_password);
+        EditText editTextUsername = secretFormView.findViewById(R.id.edit_username);
+        TextView folderNameTextView = secretFormView.findViewById(R.id.folder_name);
+
+        editTextName.setText(secret.getName());
+        editTextUrl.setText(secret.getUrl());
+        editTextDescription.setText(secret.getNotes());
+        editTextUsername.setText(secret.getUsername());
+        folderNameTextView.setText(folder.getName());
+
+        builder.setPositiveButton(getString(R.string.update), (dialog12, which12) -> {
+            secret.setName(editTextName.getText().toString());
+            secret.setNotes(editTextDescription.getText().toString());
+            secret.setUrl(editTextUrl.getText().toString());
+            secret.setUsername(editTextUsername.getText().toString());
+            String password = editTextPassword.getText().toString();
+            if (!password.equals("")) secret.setNewPassword(password);
+            secretService.updateSecret(folder.getKey(), secret);
+        });
+
+        AlertDialog formDialog = builder.create();
+        formDialog.show();
+    }
+
+    private void shareFolder(Folder folder) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(R.string.share_title);
+        builder.setMessage(R.string.share_desc);
+        final EditText input = new EditText(getContext());
+        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        builder.setView(input);
+        builder.setPositiveButton(R.string.ok, (dialog, which) -> folderService.shareFolder(folder, input.getText().toString()));
+        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
+        builder.show();
+    }
+
+
+    private void extractFolderName() {
+        folderNames = new String[folderList.size()];
+        for (int i = 0; i < folderList.size(); i++) {
+            folderNames[i] = folderArray[i].getName();
+        }
+    }
+
+    @Override
+    public void OnGetFoldersSuccess(List<Folder> folders) {
+        folderList = folders;
+        Log.d(TAG, folders.toString());
+
+        sectionAdapter = new SectionedRecyclerViewAdapter();
+
+        if (folderList.size() > 0) {
+            noResourcesMessage.setVisibility(View.INVISIBLE);
+            for (Folder folder : folderList) {
+                sectionAdapter.addSection(new FolderSection(folder));
+            }
+
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+            recyclerView.setAdapter(sectionAdapter);
+
+        } else
+            noResourcesMessage.setVisibility(View.VISIBLE);
+
+        showProgress(false);
+    }
+
+    @Override
+    public void OnCreateFolderSuccess(Folder folder) {
+        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
+        refreshFolderSecretList();
+    }
+
+    @Override
+    public void OnUpdateFolderSuccess(Folder folder) {
+        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
+        refreshFolderSecretList();
+    }
+
+    @Override
+    public void OnDeleteFolderSuccess(Long id) {
+        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
+        refreshFolderSecretList();
+    }
+
+    @Override
+    public void OnShareFolderSuccess(Folder folder) {
+        Toast.makeText(getContext(), R.string.share_success, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void OnFolderActionError(String error) {
+        Toast.makeText(getContext(), getString(R.string.something_wrong) + " " + error, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void OnGetSecretsSuccess(List<Secret> secrets) {
+
+    }
+
+    @Override
+    public void OnCreateSecretSuccess(Secret secret) {
+        Toast.makeText(getContext(), R.string.save_success, Toast.LENGTH_SHORT).show();
+        refreshFolderSecretList();
+    }
+
+    @Override
+    public void OnUpdateSecretSuccess(Secret secret) {
+        Toast.makeText(getContext(), getString(R.string.updated) + " " + secret.getName(), Toast.LENGTH_SHORT).show();
+        refreshFolderSecretList();
+    }
+
+    @Override
+    public void OnDeleteSecretSuccess(Long id) {
+        Toast.makeText(getContext(), getString(R.string.deleted_msg), Toast.LENGTH_SHORT).show();
+        refreshFolderSecretList();
+    }
+
+    @Override
+    public void OnSecretActionError(String error) {
+        Toast.makeText(getContext(), getString(R.string.something_wrong) + " " + error, Toast.LENGTH_LONG).show();
     }
 
     private class FolderSection extends StatelessSection {
@@ -378,7 +452,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             itemHolder.rootView.setOnClickListener(v -> {
                 PopupMenu popup = new PopupMenu(v.getContext(), v);
                 popup.getMenuInflater().inflate(R.menu.secret_options, popup.getMenu());
-                if (!folder.getOwnerLogin().equals(((BaseActivity)getActivity()).getJhiUsers().getLogedUserLogin())) {
+                if (!folder.getOwnerLogin().equals(((BaseActivity) getActivity()).getJhiUsers().getLogedUserLogin())) {
                     //If user not owner then remove edit and delete options from menu.
                     Menu menu = popup.getMenu();
                     menu.removeItem(R.id.edit);
@@ -405,11 +479,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             Snackbar.make(v, secret.getPasswordDecrypted(folder.getKey()), Snackbar.LENGTH_LONG).show();
                             return true;
                         case R.id.edit:
-                            Toast.makeText(
-                                    v.getContext(),
-                                    "Not implemented yet",
-                                    Toast.LENGTH_SHORT
-                            ).show();
+                            editSecret(secret,folder);
                             return true;
                         case R.id.delete:
                             new AlertDialog.Builder(getContext())
@@ -442,7 +512,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
             headerHolder.folderNameTextView.setText(folder.getName());
 
-            if (!folder.getOwnerLogin().equals(((BaseActivity)getActivity()).getJhiUsers().getLogedUserLogin())) {
+            if (!folder.getOwnerLogin().equals(((BaseActivity) getActivity()).getJhiUsers().getLogedUserLogin())) {
                 headerHolder.folderCountTextView.setText("(" + folder.getOwnerLogin() + ")");
                 headerHolder.folderSettings.setVisibility(View.INVISIBLE);
             } else {
@@ -450,7 +520,6 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 if (count.equals("0")) count = getString(R.string.none);
                 headerHolder.folderCountTextView.setText("(" + count + ")");
             }
-
 
 
             headerHolder.folderSettings.setOnClickListener(v -> {
@@ -462,7 +531,7 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                             shareFolder(folder);
                             return true;
                         case R.id.edit:
-                           editFolder(folder);
+                            editFolder(folder);
                             return true;
                         case R.id.delete:
                             new AlertDialog.Builder(getContext())
@@ -481,38 +550,6 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
                 menuHelper.show();
             });
         }
-    }
-
-    private void editFolder(Folder folder) {
-        AlertDialog.Builder ab = new AlertDialog.Builder(getContext());
-        ab.setTitle("Edit the name of the folder");
-        final EditText folderText = new EditText(getContext());
-        folderText.setText(folder.getName());
-        ab.setView(folderText);
-
-        ab.setPositiveButton("Update", (dialog1, which1) -> {
-            String folderName = folderText.getText().toString();
-            folder.setName(folderName);
-            folderService.updateFolder(folder);
-            dialog1.dismiss();
-        });
-
-        ab.setNegativeButton("Cancel", (dialog16, which16) -> dialog16.dismiss());
-
-        AlertDialog a = ab.create();
-        a.show();
-    }
-
-    private void shareFolder(Folder folder) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle(R.string.share_title);
-        builder.setMessage(R.string.share_desc);
-        final EditText input = new EditText(getContext());
-        input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
-        builder.setView(input);
-        builder.setPositiveButton(R.string.ok, (dialog, which) -> folderService.shareFolder(folder, input.getText().toString()));
-        builder.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.cancel());
-        builder.show();
     }
 
     private class FolderViewHolder extends RecyclerView.ViewHolder {
@@ -540,18 +577,6 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
             rootView = view;
             secretNameTextView = view.findViewById(R.id.secret_name);
             secretUsernameTextView = view.findViewById(R.id.secret_username);
-        }
-    }
-
-    private void updateFolderSecretList(){
-        showProgress(true);
-        folderService.getUserFolders(true);
-    }
-
-    private void extractFolderName(){
-        folderNames = new String[folderList.size()];
-        for (int i = 0;i< folderList.size(); i++){
-            folderNames[i] = folderArray[i].getName();
         }
     }
 }

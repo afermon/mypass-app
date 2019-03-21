@@ -15,24 +15,19 @@ public class ApiServiceGenerator {
     private static final String ROOMIE_API_STAGING = "https://staging-mypass-web.herokuapp.com/api/";
     private static final String ROOMIE_API_DEV = "https://dev-mypass-web.herokuapp.com/api/";
     private static final String ROOMIE_API_LOCAL = "http://10.0.2.1:8080/api/";
-
+    private static Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+            .create();
+    private static Retrofit.Builder builder = new Retrofit.Builder()
+            .baseUrl(getServerURL())
+            .addConverterFactory(GsonConverterFactory.create(gson));
+    private static Retrofit retrofit = builder.build();
+    private static OkHttpClient.Builder httpClient
+            = new OkHttpClient.Builder();
 
     private static String getServerURL() {
         return BuildConfig.DEBUG ? ROOMIE_API_DEV : ROOMIE_API_PROD;
     }
-
-    private static Gson gson = new GsonBuilder()
-            .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-            .create();
-
-    private static Retrofit.Builder builder = new Retrofit.Builder()
-            .baseUrl(getServerURL())
-            .addConverterFactory(GsonConverterFactory.create(gson));
-
-    private static Retrofit retrofit = builder.build();
-
-    private static OkHttpClient.Builder httpClient
-            = new OkHttpClient.Builder();
 
     public static <S> S createService(Class<S> serviceClass) {
         return retrofit.create(serviceClass);

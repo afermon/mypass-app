@@ -26,7 +26,7 @@ public class FolderService {
         this.authToken = ((BaseActivity) this.context).getJhiUsers().getAuthToken();
     }
 
-    public void getUserFolders(boolean eagerload){
+    public void getUserFolders(boolean eagerload) {
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
         Call<List<Folder>> call = apiService.getUserFolders(eagerload);
@@ -51,7 +51,7 @@ public class FolderService {
 
     }
 
-    public void createFolder(Folder folder){
+    public void createFolder(Folder folder) {
 
         folder.setKey(EncryptionHelper.generateRandomString()); // Generate encryption key for the folder secrets
 
@@ -78,7 +78,7 @@ public class FolderService {
         });
     }
 
-    public void updateFolder(Folder folder){
+    public void updateFolder(Folder folder) {
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
         Call<Folder> call = apiService.updateFolder(folder);
@@ -91,7 +91,7 @@ public class FolderService {
                 } else {
                     Log.e(TAG, response.toString());
                     listener.OnFolderActionError(Integer.toString(response.code()));
-            }
+                }
             }
 
             @Override
@@ -102,7 +102,7 @@ public class FolderService {
         });
     }
 
-    public void deleteFolder(Folder folder){
+    public void deleteFolder(Folder folder) {
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
         Call<Void> call = apiService.deleteFolder(folder.getId());
@@ -126,7 +126,7 @@ public class FolderService {
         });
     }
 
-    public void shareFolder(Folder folder, String email){
+    public void shareFolder(Folder folder, String email) {
         FolderApiEndpointInterface apiService = ApiServiceGenerator.createService(FolderApiEndpointInterface.class, authToken);
 
         Call<Folder> call = apiService.shareFolder(folder.getId(), email);
@@ -152,10 +152,15 @@ public class FolderService {
 
     public interface FolderServiceListener {
         void OnGetFoldersSuccess(List<Folder> Folders);
+
         void OnCreateFolderSuccess(Folder folder);
+
         void OnUpdateFolderSuccess(Folder folder);
+
         void OnDeleteFolderSuccess(Long id);
+
         void OnShareFolderSuccess(Folder folder);
+
         void OnFolderActionError(String error);
     }
 }

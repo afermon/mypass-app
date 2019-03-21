@@ -2,9 +2,9 @@ package com.cosmicode.mypass.domain;
 
 public class MyPassUser {
 
+    private final String password;
     private String login;
     private String email;
-    private final String password;
     private String firstName;
     private String lastName;
 
@@ -24,28 +24,28 @@ public class MyPassUser {
         return login;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
     public void setLogin(String login) {
         this.login = login;
+    }
+
+    public String getEmail() {
+        return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
     }
 
     public void setLastName(String lastName) {

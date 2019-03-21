@@ -49,6 +49,9 @@ public class Secret {
 
     private String newPassword;
 
+    public Secret() {
+    }
+
     public Secret(String created, Long folderId, String folderName, Long id, String modified, String name, String notes, Long ownerId, String ownerLogin, String password, String url, String username, String newPassword) {
         this.created = created;
         this.folderId = folderId;
@@ -60,16 +63,6 @@ public class Secret {
         this.ownerId = ownerId;
         this.ownerLogin = ownerLogin;
         this.password = password;
-        this.url = url;
-        this.username = username;
-        this.newPassword = newPassword;
-    }
-
-    public Secret(Long folderId, String name, String notes, Long ownerId, String url, String username, String newPassword) {
-        this.folderId = folderId;
-        this.name = name;
-        this.notes = notes;
-        this.ownerId = ownerId;
         this.url = url;
         this.username = username;
         this.newPassword = newPassword;

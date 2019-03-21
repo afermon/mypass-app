@@ -33,11 +33,12 @@ import butterknife.OnClick;
 public class LoginActivity extends BaseActivity implements OnLoginListener {
 
     private static final int RC_SIGN_IN = 175;
+    @BindView(R.id.login_form)
+    ConstraintLayout loginForm;
+    @BindView(R.id.login_progress)
+    ProgressBar loginProgress;
     private CallbackManager callbackManager;
     private GoogleSignInClient mGoogleSignInClient;
-
-    @BindView(R.id.login_form) ConstraintLayout loginForm;
-    @BindView(R.id.login_progress) ProgressBar loginProgress;
 
     public static final Intent clearTopIntent(Context from) {
         Intent intent = new Intent(from, LoginActivity.class);

@@ -1,7 +1,6 @@
 package com.cosmicode.mypass;
 
 import android.os.Bundle;
-import androidx.annotation.Nullable;
 import android.widget.Toast;
 
 import com.cosmicode.mypass.service.UserInterface;
@@ -11,6 +10,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
+import androidx.annotation.Nullable;
 
 public class SplashActivity extends BaseActivity implements OnLoginListener {
 
