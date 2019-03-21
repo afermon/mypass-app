@@ -372,9 +372,8 @@ public class MainHomeFragment extends Fragment implements FolderService.FolderSe
 
         editFolderDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             if(mAwesomeValidation.validate()) {
-                String folderName = folderNameTexView.getText().toString();
-                Folder newFolder = new Folder(null, null, null, folderName, null, null, null, null);
-                folderService.createFolder(newFolder);
+                folder.setName(folderNameTexView.getText().toString());
+                folderService.updateFolder(folder);
                 showProgress(true);
                 editFolderDialog.dismiss();
             }
