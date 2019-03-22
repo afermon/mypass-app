@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/mypass_loading"
+    android:background="@drawable/mypass_loading"
     android:backgroundTint="@color/black_trans"
     android:backgroundTintMode="src_over"
     tools:context=".SplashActivity">
@@ -19,7 +19,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/mypass_white_text" />
+        app:srcCompat="@drawable/mypass_white_text" />
 
     <TextView
         android:id="@+id/copyright"
