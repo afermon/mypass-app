@@ -2,17 +2,17 @@
     <string name="app_name">MyPass</string>
 
     <!-- MyPass API -->
-    <string name="mypass_api_server_prod" translatable="false">https://prod-mypass-web.herokuapp.com/api/</string>
-    <string name="mypass_api_server_staging" translatable="false">https://staging-mypass-web.herokuapp.com/api/</string>
-    <string name="mypass_api_server_dev" translatable="false">https://dev-mypass-web.herokuapp.com/api/</string>
+    <string name="mypass_api_server_prod" translatable="false">https://prod-mypass/api/</string>
+    <string name="mypass_api_server_staging" translatable="false">https://staging-mypass/api/</string>
+    <string name="mypass_api_server_dev" translatable="false">https://dev-mypass/api/</string>
     <string name="mypass_api_server_local" translatable="false">http://10.0.2.1:8080/api/</string>
 
     <!-- Facebook login -->
-    <string name="fb_login_protocol_scheme" translatable="false">fb780837828967053</string>
-    <string name="facebook_app_id" translatable="false">780837828967053</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fbXXXXXXXXX</string>
+    <string name="facebook_app_id" translatable="false">XXXXXXXXXXX</string>
 
     <!-- Google login -->
-    <string name="default_web_client_id" translatable="false">907608270145-ne25o32curu5at5ij3n0gbjfc17nqju5.apps.googleusercontent.com</string>
+    <string name="default_web_client_id" translatable="false">XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</string>
 
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
