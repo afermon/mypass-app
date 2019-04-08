@@ -1,4 +1,4 @@
-[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/afermon/mypass-app/blob/master/LICENCE)
+[![GitHub license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/afermon/mypass-app/blob/master/LICENSE)
 
 # MyPass  
 
