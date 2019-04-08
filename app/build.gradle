@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        debug {
-            keyAlias 'debug'
-            storeFile file('../keystore-cosmicode-debug.jks')
-            keyPassword 'cosmicode'
-            storePassword 'cosmicode'
-        }
-    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.cosmicode.mypass"
